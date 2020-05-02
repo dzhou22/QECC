@@ -25,6 +25,16 @@ import account
 IBMQ.load_account()
 provider = IBMQ.get_provider(hub='ibm-q-university', group='harvard-lukin', project='phys160')
 
+# Hamming partity check
+H = np.matrix([[1, 0, 1, 0, 1, 0, 1],
+               [0, 1, 1, 0, 0, 1, 1],
+               [0, 0, 0, 1, 1, 1, 1]])
+
+# Hamming generator
+G = np.matrix([[1, 0, 1, 0, 1, 0, 1],
+               [0, 1, 1, 0, 0, 1, 1],
+               [0, 0, 0, 1, 1, 1, 1],
+               [1, 1, 1, 0, 0, 0, 0]])
 
 # Noise model
 
@@ -42,18 +52,32 @@ def get_noise(p1, p2, p4):
     return noise_model
 
 
+# Ideal output
+
+def ideal_log0():
+    '''Return log0 state as a dictionary of basis elements
+    '''
+    res = dict()
+    for i in range(8):
+        to_mult = np.matrix([int(b) for b in list(reversed(list(bin(i)[2:].zfill(3))))])
+        basis_elem = np.array(np.matmul(to_mult, H) % 2)[0].tolist()
+        dict_key = ''.join([str(b) for b in list(reversed(basis_elem))])
+        res[dict_key] = 1 / np.sqrt(8)
+    return res
+
+def ideal_log1():
+    '''Return log1 state as a dictionary of basis elements
+    '''
+    res = dict()
+    all_ones = np.matrix([1] * 7)
+    for i in range(8):
+        to_mult = np.matrix([int(b) for b in list(reversed(list(bin(i)[2:].zfill(3))))])
+        basis_elem = np.array((np.matmul(to_mult, H) + all_ones) % 2)[0].tolist()
+        dict_key = ''.join([str(b) for b in list(reversed(basis_elem))])
+        res[dict_key] = 1 / np.sqrt(8)
+    return res
+
 # Prepare circuit
-
-# Hamming partity check
-H = np.matrix([[1, 0, 1, 0, 1, 0, 1],
-               [0, 1, 1, 0, 0, 1, 1],
-               [0, 0, 0, 1, 1, 1, 1]])
-
-# Hamming generator
-G = np.matrix([[1, 0, 1, 0, 1, 0, 1],
-               [0, 1, 1, 0, 0, 1, 1],
-               [0, 0, 0, 1, 1, 1, 1],
-               [1, 1, 1, 0, 0, 0, 0]])
 
 def apply_matrix(mat, source, target, circuit):
     '''Apply binary matrix `mat` using CNOT gates with input qubits
@@ -107,22 +131,31 @@ def correct_phases(circuit, codequbits, phasequbits):
     circuit.h(codequbits)
     correct_flips(circuit, codequbits, phasequbits)
     circuit.h(codequbits)
-            
+
+def print_results(name, counts, shots):
+    # approximate fidelity as probability of perfect outcome
+    fidelity = counts.get('0000000', 0) / shots
+    print(name + ': ' + 'fidelity=' + str(fidelity))
+
+shots = 2048
 cq = QuantumRegister(7, 'code')
 aqf = QuantumRegister(3, 'ancillaflip')
 aqp = QuantumRegister(3, 'ancillaphase')
 cc = ClassicalRegister(7, 'classic')
 init_circ = QuantumCircuit(cq, aqf, aqp, cc)
 init_log0(init_circ, cq)
+deinit_circ = init_circ.inverse()
 # init_circ.draw(output='mpl').show()
+# deinit_circ.draw(output='mpl').show()
 
 measure_circ = QuantumCircuit(cq, aqf, aqp, cc)
 measure_circ.measure(cq, cc)
 # measure_circ.draw(output='mpl').show()
 
 # Verify initialization of logical state worked
-counts = execute(init_circ + measure_circ, Aer.get_backend('qasm_simulator')).result().get_counts()
-print('Base Results:', counts)
+counts = execute(init_circ + deinit_circ + measure_circ,
+                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+print_results('0 corrections', counts, shots)
 
 flip_circ = QuantumCircuit(cq, aqf, aqp, cc)
 correct_flips(flip_circ, cq, aqf)
@@ -133,9 +166,9 @@ correct_phases(phase_circ, cq, aqp)
 # phase_circ.draw(output='mpl').show()
 
 # Make sure it can correct 0 errors
-entire_circ = init_circ + flip_circ + phase_circ + measure_circ
-counts = execute(entire_circ, Aer.get_backend('qasm_simulator')).result().get_counts()
-print('Corrected Results Without Errors:', counts)
+counts = execute(init_circ + flip_circ + phase_circ + deinit_circ + measure_circ,
+                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+print_results('1 correction, no errors', counts, shots)
 
 error_circ = QuantumCircuit(cq, aqf, aqp, cc)
 error_circ.x(cq[3])
@@ -143,9 +176,10 @@ error_circ.z(cq[5])
 # error_circ.draw(output='mpl').show()
 
 # Correct 1 flip and 1 phase error
-noisy_circ = init_circ + error_circ + flip_circ + phase_circ + measure_circ
-counts = execute(noisy_circ, Aer.get_backend('qasm_simulator')).result().get_counts()
-print('Corrected Results With Managable Errors:', counts)
+counts = execute(init_circ + error_circ + flip_circ + phase_circ +
+                 deinit_circ + measure_circ,
+                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+print_results('1 correction, 1 flip, 1 phase errors', counts, shots)
 
 more_error_circ = QuantumCircuit(cq, aqf, aqp, cc)
 more_error_circ.x(cq[[2,3]])
@@ -153,14 +187,19 @@ more_error_circ.z(cq[5])
 # more_error_circ.draw(output='mpl').show()
 
 # Fail to correct 2 flips and 1 phase error
-more_noisy_circ = init_circ + more_error_circ + flip_circ + phase_circ + measure_circ
-counts = execute(more_noisy_circ, Aer.get_backend('qasm_simulator')).result().get_counts()
-print('Corrected Results With Too Many Errors:', counts)
+counts = execute(init_circ + more_error_circ + flip_circ + phase_circ
+                 + measure_circ,
+                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+print_results('1 correction, 2 flip, 1 phase errors', counts, shots)
 
 # Run with depolarizing noise
 noise_model = get_noise(.001, .001, .001)
-entire_circ = init_circ + flip_circ + phase_circ + measure_circ
-counts = execute(entire_circ, Aer.get_backend('qasm_simulator'),
-                 noise_model=noise_model).result().get_counts()
-print('Corrected Results With Depolarizing Errors:', counts)
+counts = execute(init_circ + deinit_circ + measure_circ,
+                 Aer.get_backend('qasm_simulator'),
+                 noise_model=noise_model, shots=shots).result().get_counts()
+print_results('0 corrections, depolarizing errors', counts, shots)
+counts = execute(init_circ + flip_circ + phase_circ + deinit_circ +
+                 measure_circ, Aer.get_backend('qasm_simulator'),
+                 noise_model=noise_model, shots=shots).result().get_counts()
+print_results('1 correction, depolarizing errors', counts, shots)
 
