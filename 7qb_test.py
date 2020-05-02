@@ -182,8 +182,8 @@ counts = execute(init_circ + error_circ + flip_circ + phase_circ +
 print_results('1 correction, 1 flip, 1 phase errors', counts, shots)
 
 more_error_circ = QuantumCircuit(cq, aqf, aqp, cc)
-more_error_circ.x(cq[[2,3]])
-more_error_circ.z(cq[5])
+more_error_circ.x(cq[[2, 3]])
+more_error_circ.z(cq[[5]])
 # more_error_circ.draw(output='mpl').show()
 
 # Fail to correct 2 flips and 1 phase error
@@ -203,3 +203,16 @@ counts = execute(init_circ + flip_circ + phase_circ + deinit_circ +
                  noise_model=noise_model, shots=shots).result().get_counts()
 print_results('1 correction, depolarizing errors', counts, shots)
 
+roterror_circ = QuantumCircuit(cq, aqf, aqp, cc)
+roterror_circ.u3(.3, .3, .3, cq)
+# roterror_circ.draw(output='mpl').show()
+
+# Run with rotation error
+counts = execute(init_circ + roterror_circ + deinit_circ +
+                 measure_circ, Aer.get_backend('qasm_simulator'),
+                 shots=shots).result().get_counts()
+print_results('0 corrections, rotation error', counts, shots)
+counts = execute(init_circ + roterror_circ + flip_circ + phase_circ +
+                 deinit_circ + measure_circ,
+                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+print_results('1 correction, rotation error', counts, shots)
