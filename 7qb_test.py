@@ -38,17 +38,19 @@ G = np.matrix([[1, 0, 1, 0, 1, 0, 1],
 
 # Noise model
 
-def get_noise(p1, p2, p4):
-    '''Returns noie model for given error probabilities for 1, 2, and 4
-    qubit gates
+def get_noise(p1, p2, p4, pu3=0):
+    '''Returns noise model for given error probabilities for 1, 2, and 4
+    qubit gates, as well as a separate probability for u3 gates
     '''
     error_1 = depolarizing_error(p1, 1)
     error_2 = depolarizing_error(p2, 2)
     error_4 = depolarizing_error(p4, 4)
+    error_u3 = depolarizing_error(pu3, 1)
     noise_model = NoiseModel()
     noise_model.add_all_qubit_quantum_error(error_1, ['x', 'h']) 
     noise_model.add_all_qubit_quantum_error(error_2, ['cx']) 
     noise_model.add_all_qubit_quantum_error(error_4, ['c3x']) 
+    noise_model.add_all_qubit_quantum_error(error_u3, ['u3']) 
     return noise_model
 
 
@@ -137,25 +139,141 @@ def print_results(name, counts, shots):
     fidelity = counts.get('0000000', 0) / shots
     print(name + ': ' + 'fidelity=' + str(fidelity))
 
+def test_circs():
+    # Verify initialization of logical state worked
+    counts = execute(init0_circ + deinit0_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+    print_results('0 corrections', counts, shots)
+
+    # Make sure it can correct 0 errors
+    counts = execute(init0_circ + flip_circ + phase_circ + deinit0_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+    print_results('1 correction, no errors', counts, shots)
+
+    # Correct 1 flip and 1 phase error
+    error_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    error_circ.x(cq[3])
+    error_circ.z(cq[5])
+    # error_circ.draw(output='mpl').show()
+    counts = execute(init0_circ + error_circ + flip_circ + phase_circ +
+                     deinit0_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+    print_results('1 correction, 1 flip, 1 phase errors', counts, shots)
+
+    # Fail to correct 2 flips and 1 phase error
+    more_error_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    more_error_circ.x(cq[[2, 3]])
+    more_error_circ.z(cq[[5]])
+    # more_error_circ.draw(output='mpl').show()
+    counts = execute(init0_circ + more_error_circ + flip_circ + phase_circ
+                     + measure_circ,
+                     Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+    print_results('1 correction, 2 flip, 1 phase errors', counts, shots)
+
+    # Run with depolarizing noise
+    noise_model = get_noise(.001, .001, .001)
+    counts = execute(init0_circ + deinit0_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    print_results('0 corrections, depolarizing errors', counts, shots)
+    counts = execute(init0_circ + flip_circ + phase_circ + deinit0_circ +
+                     measure_circ, Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    print_results('1 correction, depolarizing errors', counts, shots)
+
+    # Run with rotation error
+    roterror_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    roterror_circ.u3(.3, .3, .3, cq)
+    # roterror_circ.draw(output='mpl').show()
+    counts = execute(init0_circ + roterror_circ + deinit0_circ +
+                     measure_circ, Aer.get_backend('qasm_simulator'),
+                     shots=shots).result().get_counts()
+    print_results('0 corrections, rotation error', counts, shots)
+    counts = execute(init0_circ + roterror_circ + flip_circ + phase_circ +
+                     deinit0_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
+    print_results('1 correction, rotation error', counts, shots)
+
+def get_fidelities(noise_model):
+    '''Compute fidelity of a single qubit x gate with and without error
+    correction in the presence of depolarizing noie. The x gate is
+    implemented with u3 to isolate it in the noise model.
+    '''
+    # Base implementation, on single qubit with no encoding
+    base_circ = QuantumCircuit(1, 1)
+    base_circ.u3(np.pi, 0, 0, 0)
+    base_circ.measure(0, 0)
+    counts = execute(base_circ, Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    base_fidelity = counts.get('1', 0) / shots
+    
+    # Implementation using 7-qubit code
+    xgate_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    xgate_circ.u3(np.pi, 0, 0, cq)
+
+    # Without correction
+    # counts = execute(init0_circ + xgate_circ + deinit1_circ +
+    #                  measure_circ, Aer.get_backend('qasm_simulator'),
+    #                  noise_model=noise_model, shots=shots).result().get_counts()
+    # nocorr_fidelity = counts.get('0000000', 0) / shots
+
+    # With correction
+    counts = execute(init0_circ + xgate_circ + flip_circ + phase_circ
+                     + deinit1_circ + measure_circ,
+                     Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    corr_fidelity = counts.get('0000000', 0) / shots
+
+    # print('Single qubit x gate: fidelity=' + str(base_fidelity)) 
+    # print('Encoded x gate, no correction: fidelity=' + str(nocorr_fidelity)) 
+    # print('Encoded x gate, with correction: fidelity=' + str(corr_fidelity))
+
+    return (base_fidelity, corr_fidelity)
+    
+def predict_fidelities(p):
+    '''Rough prediction of fidelities without and with error correction
+    based on depolarizing parameter `p` for a single qubit gate. These
+    predictions assume the gates in the error correcting procedures
+    have no noise.  In qiskit, depolarizing channel with parameter p
+    causes no error with probability 1-p+p/4, and causes a flip,
+    phase, or flip+phase error each with probability p/4.
+    '''
+    # Probability that no flip error occurs is (1-p+p/4) + (p/4) by
+    # above.
+    base_fidelity = 1 - p/2
+
+    # Approximate fidelity that correction succeeds as probability
+    # that at most 1 flip error and 1 phase error occurs (strictly
+    # speaking this gives a lower bound on fidelity).
+    corr_fidelity = ((1 - p + p/4)**7 # no error
+                     + 7 * (1 - p + p/4)**6 * (p/4) # 1 flip
+                     + 7 * (1 - p + p/4)**6 * (p/4) # 1 phase
+                     + 7 * (1 - p + p/4)**6 * (p/4) # 1 flip+phase same qubit
+                     + 7 * 6 * (1 - p + p/4)**5 * (p/4) * (p/4)) # 1 phase, 1 flip, different qubits
+
+    return (base_fidelity, corr_fidelity)
+
+
 shots = 2048
 cq = QuantumRegister(7, 'code')
 aqf = QuantumRegister(3, 'ancillaflip')
 aqp = QuantumRegister(3, 'ancillaphase')
 cc = ClassicalRegister(7, 'classic')
-init_circ = QuantumCircuit(cq, aqf, aqp, cc)
-init_log0(init_circ, cq)
-deinit_circ = init_circ.inverse()
-# init_circ.draw(output='mpl').show()
-# deinit_circ.draw(output='mpl').show()
+
+init0_circ = QuantumCircuit(cq, aqf, aqp, cc)
+init_log0(init0_circ, cq)
+deinit0_circ = init0_circ.inverse()
+# init0_circ.draw(output='mpl').show()
+# deinit0_circ.draw(output='mpl').show()
+init1_circ = QuantumCircuit(cq, aqf, aqp, cc)
+init_log1(init1_circ, cq)
+deinit1_circ = init1_circ.inverse()
+# init1_circ.draw(output='mpl').show()
+# deinit1_circ.draw(output='mpl').show()
 
 measure_circ = QuantumCircuit(cq, aqf, aqp, cc)
 measure_circ.measure(cq, cc)
 # measure_circ.draw(output='mpl').show()
-
-# Verify initialization of logical state worked
-counts = execute(init_circ + deinit_circ + measure_circ,
-                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
-print_results('0 corrections', counts, shots)
 
 flip_circ = QuantumCircuit(cq, aqf, aqp, cc)
 correct_flips(flip_circ, cq, aqf)
@@ -165,54 +283,11 @@ phase_circ = QuantumCircuit(cq, aqf, aqp, cc)
 correct_phases(phase_circ, cq, aqp)
 # phase_circ.draw(output='mpl').show()
 
-# Make sure it can correct 0 errors
-counts = execute(init_circ + flip_circ + phase_circ + deinit_circ + measure_circ,
-                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
-print_results('1 correction, no errors', counts, shots)
+# test_circs()
 
-error_circ = QuantumCircuit(cq, aqf, aqp, cc)
-error_circ.x(cq[3])
-error_circ.z(cq[5])
-# error_circ.draw(output='mpl').show()
-
-# Correct 1 flip and 1 phase error
-counts = execute(init_circ + error_circ + flip_circ + phase_circ +
-                 deinit_circ + measure_circ,
-                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
-print_results('1 correction, 1 flip, 1 phase errors', counts, shots)
-
-more_error_circ = QuantumCircuit(cq, aqf, aqp, cc)
-more_error_circ.x(cq[[2, 3]])
-more_error_circ.z(cq[[5]])
-# more_error_circ.draw(output='mpl').show()
-
-# Fail to correct 2 flips and 1 phase error
-counts = execute(init_circ + more_error_circ + flip_circ + phase_circ
-                 + measure_circ,
-                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
-print_results('1 correction, 2 flip, 1 phase errors', counts, shots)
-
-# Run with depolarizing noise
-noise_model = get_noise(.001, .001, .001)
-counts = execute(init_circ + deinit_circ + measure_circ,
-                 Aer.get_backend('qasm_simulator'),
-                 noise_model=noise_model, shots=shots).result().get_counts()
-print_results('0 corrections, depolarizing errors', counts, shots)
-counts = execute(init_circ + flip_circ + phase_circ + deinit_circ +
-                 measure_circ, Aer.get_backend('qasm_simulator'),
-                 noise_model=noise_model, shots=shots).result().get_counts()
-print_results('1 correction, depolarizing errors', counts, shots)
-
-roterror_circ = QuantumCircuit(cq, aqf, aqp, cc)
-roterror_circ.u3(.3, .3, .3, cq)
-# roterror_circ.draw(output='mpl').show()
-
-# Run with rotation error
-counts = execute(init_circ + roterror_circ + deinit_circ +
-                 measure_circ, Aer.get_backend('qasm_simulator'),
-                 shots=shots).result().get_counts()
-print_results('0 corrections, rotation error', counts, shots)
-counts = execute(init_circ + roterror_circ + flip_circ + phase_circ +
-                 deinit_circ + measure_circ,
-                 Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
-print_results('1 correction, rotation error', counts, shots)
+for i in range(0, 21, 1):
+    p = i / 100
+    fid_noise_model = get_noise(0, 0, 0, p)
+    empfids = get_fidelities(fid_noise_model)
+    anafids = predict_fidelities(p)
+    print(empfids, anafids)
