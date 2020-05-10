@@ -253,6 +253,63 @@ def predict_fidelities(p):
 
     return (base_fidelity, corr_fidelity)
 
+def plot_fidelities_noisefree_corr():
+    '''Plot fidelities for the case where there is no noise during error
+    correction
+    '''
+    empbase = []
+    empcorr = []
+    anabase = []
+    anacorr = []
+    pvals = [i / 100 for i in range(0, 16)]
+    for p in pvals:
+        fid_noise_model = get_noise(0, 0, 0, p)
+        empfids = get_fidelities(fid_noise_model)
+        anafids = predict_fidelities(p)
+        empbase.append(empfids[0])
+        empcorr.append(empfids[1])
+        anabase.append(anafids[0])
+        anacorr.append(anafids[1])
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.plot(pvals, empbase, marker='^', label='No error correction, empirical')
+    ax.plot(pvals, empcorr, marker='v', label='With error correction, empirical')
+    ax.plot(pvals, anabase, ls='--', label='No error correction, analytical')
+    ax.plot(pvals, anacorr, ls=':', label='With error correction, analytical (lower bound)')
+
+    ax.set_xlabel('Depolarization probability')
+    ax.set_ylabel('Fidelity of X gate')
+
+    plt.legend(loc=3)
+    plt.savefig('noisefree_corr.png')
+
+def plot_fidelities_noisy_corr():
+    '''Plot fidelities where all gates have the same depolarization
+    parameter. Note that a more realistic model would make multi-qubit
+    gates more noisy.
+    '''
+    empbase = []
+    empcorr = []
+    pvals = [i / 10000 for i in range(0, 16)]
+    for p in pvals:
+        fid_noise_model = get_noise(p, p, p, p)
+        empfids = get_fidelities(fid_noise_model)
+        empbase.append(empfids[0])
+        empcorr.append(empfids[1])
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.plot(pvals, empbase, marker='^', label='No error correction')
+    ax.plot(pvals, empcorr, marker='v', label='With error correction')
+
+    ax.set_xlabel('Depolarization probability')
+    ax.set_ylabel('Fidelity of X gate')
+
+    plt.legend(loc=3)
+    plt.savefig('noisy_corr.png')
 
 shots = 2048
 cq = QuantumRegister(7, 'code')
@@ -285,9 +342,5 @@ correct_phases(phase_circ, cq, aqp)
 
 # test_circs()
 
-for i in range(0, 21, 1):
-    p = i / 100
-    fid_noise_model = get_noise(0, 0, 0, p)
-    empfids = get_fidelities(fid_noise_model)
-    anafids = predict_fidelities(p)
-    print(empfids, anafids)
+plot_fidelities_noisefree_corr()
+plot_fidelities_noisy_corr()
