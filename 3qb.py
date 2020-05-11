@@ -448,6 +448,12 @@ def plot_results(results, title):
 
 # plot_results(success_rate, '3-qubit bit flip code')
 
+qc = BitFlip2()
+qc.add_error(0.5)
+qc.correct_error()
+qc.test_correction()
+qc.draw()
+print(qc.get_accuracy()) 
 
 # # Testing PhaseFlip Code with hand-added errors
 # success_rate = []
@@ -485,12 +491,12 @@ def plot_results(results, title):
 
 
 # # Testing BitFlip2 Code
-qc = BitFlip2()
-# qc.x_gate()
-# qc.correct_error()
-qc.draw()
+# qc = BitFlip2()
+# # qc.x_gate()
+# # qc.correct_error()
+# qc.draw()
 
-qc.run_simulation(100,1,'1')
+# qc.run_simulation(100,1,'1')
 
 # success_rate = []
 # for p in np.arange(0,1,0.05):
