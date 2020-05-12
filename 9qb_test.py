@@ -48,6 +48,7 @@ class Nine:
             self.qc.cx(i, i+2)
 
     def inverse(self):
+        self.qc.barrier()
         for i in range(6, -1, -3):
             self.qc.cx(i, i+2).inverse()
             self.qc.cx(i, i+1).inverse()
@@ -70,6 +71,7 @@ class Nine:
         initial circuit encodes state into logical qubits
         block determines which block of three to correct for (need 1, 2, or 3)
         '''
+        self.qc.barrier()
         c = ClassicalRegister(2)
         self.qc = self.qc + QuantumCircuit(c)
         i = (block-1)*3
@@ -147,11 +149,15 @@ class Nine:
         print(result)
 
     def add_error(self, p):
-        if (random() < p):
-            if (random() < 0.5):
-                self.qc.x(self.qr[0])
-            else:
-                self.qc.z(self.qr[0])
+        for i in range(9):
+            if (random() < p):
+                if (random() < 0.5):
+                    self.qc.x(self.qr[i])
+                else:
+                    self.qc.z(self.qr[i])
+
+    def test_error_x(self, qb):
+        self.qc.x(self.qr[qb])
 
 class SingleQubit():
 
@@ -210,41 +216,58 @@ def fidelity(desired_counts, actual_counts):
 
 # Testing
 
-success_rates9 = []
-
-for p in np.arange(0, 0.25, 0.01):
-    results = []
-    for i in range(1000):
-        qc = Nine()
-        qc.add_error(p)
-        qc.bitflip_shor9(1)
-        qc.bitflip_shor9(2)
-        qc.bitflip_shor9(3)
-        qc.phaseflip_shor9()
-        qc.inverse()
-        results.append(qc.measure_first_qubit()[0:1])
-    success_rates9.append(results.count('0')/len(results))
+qc = Nine()
+qc.test_error_x(0)
+qc.bitflip_shor9(1)
+qc.bitflip_shor9(2)
+qc.bitflip_shor9(3)
+qc.phaseflip_shor9()
+qc.inverse()
+qc.draw()
+print(qc.measure_first_qubit())
 
 
-success_rates1 = []
+# success_rates9 = []
+# success_rates1 = []
 
-for p in np.arange(0, 0.25, 0.01):
-    results = []
-    for i in range(1000):
-        qc = SingleQubit()
-        qc.add_error(p)
-        # qc.draw()
-        results.append(qc.run_once())
-    success_rates1.append(results.count('0')/len(results))
+# for p in np.arange(0, 0.25, 0.01):
+#     results9 = []
+#     results1 = []
+#     for i in range(100):
+#         qc = Nine()
+#         qc.add_error(p)
+#         qc.bitflip_shor9(1)
+#         qc.bitflip_shor9(2)
+#         qc.bitflip_shor9(3)
+#         qc.phaseflip_shor9()
+#         qc.inverse()
+#         results9.append(qc.measure_first_qubit()[0:1])
 
 
-plt.plot(np.arange(0, 0.2, 0.01), success_rates9, label="with correction (9 qubits)")
-plt.plot(np.arange(0, 0.2, 0.01), success_rates1, label="no correction (1 qubit)")
-plt.title("9-qubit code")
-plt.ylabel("Fidelity")
-plt.xlabel("error probability")
-plt.legend()
-plt.show()
+#         qc = Nine()
+#         qc.add_error(p)
+#         qc.inverse()
+#         results1.append(qc.measure_first_qubit()[0:1])
+
+#         # qc = SingleQubit()
+#         # qc.add_error(p)
+#         # # qc.draw()
+#         # results1.append(qc.run_once())
+#     success_rates9.append(results9.count('0')/len(results9))
+#     success_rates1.append(results1.count('0')/len(results1))
+
+
+# plt.plot(np.arange(0, 0.25, 0.01), success_rates9, label="with correction (9 qubits)")
+# plt.plot(np.arange(0, 0.25, 0.01), success_rates1, label="no correction (9 qubit)")
+# plt.title("9-qubit code")
+# plt.ylabel("Fidelity")
+# plt.xlabel("error probability")
+# plt.legend()
+# plt.show()
+
+
+
+
 
 
 # qc.draw()
