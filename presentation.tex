@@ -12,6 +12,8 @@
   {\savebox\mybox{#1}\begin{quote}\openautoquote\hspace*{-.7ex}}
   {\unskip\closeautoquote\vspace*{1mm}\signed{\usebox\mybox}\end{quote}}
 
+\usepackage{qcircuit}
+
 %Information to be included in the title page:
 \title{Quantum Error Correction}
 \author[GGHLZ]{Louis Golowich \and Wenjie Gong \and Ari Hatzimemos\\ Dylan Li \and Dylan Zhou}
@@ -89,11 +91,44 @@
     \frametitle{3-Qubit Codes: A Review}
     \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
     \begin{itemize}
+        \item The goal is to correct bit flip errors.
         \item Encoding:
         \begin{align*}
             &\ket{0} \rightarrow \ket{0_L} \equiv \ket{000} \\
             &\ket{1} \rightarrow \ket{1_L} \equiv \ket{111}.
         \end{align*}
+        \item Encoding circuit for 3-qubit bit flip code:
+    
+        \vspace{5mm}
+        \hspace{48mm}
+        \Qcircuit @C=1em @R=1.5em {
+        \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw \\ 
+        \lstick{\ket{0}} & \targ & \qw & \qw \\
+        \lstick{\ket{0}} & \qw & \targ & \qw
+        }
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes: A Review}
+    \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
+    \begin{itemize}
+        \item Error Detection (or \textit{syndrome diagnosis}):
+            \begin{itemize}
+                \item we would like to determine which, if any, of the qubits have been corrupted
+                \item we will need 2 ancillary qubits:
+            \end{itemize}
+        \item Encoding circuit for 3-qubit bit flip code:
+    
+        \vspace{5mm}
+        \hspace{48mm}
+        \Qcircuit @C=1em @R=1.5em {
+        \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw \\ 
+        \lstick{\ket{0}} & \targ & \qw & \qw \\
+        \lstick{\ket{0}} & \qw & \targ & \qw
+        }
+
     \end{itemize}
 \end{frame}
 
