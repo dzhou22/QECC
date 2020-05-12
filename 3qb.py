@@ -483,15 +483,15 @@ def plot_results(results, title):
 # plot_results(success_rate, '3-qubit bit flip code')
 
 # Let's compare to a single qubit with no error correction:
-success_rate_1qb = []
-for p in np.arange(0, 1, 0.05):
-    results = []
-    for i in range(10000):
-        qc = SingleQubit()
-        qc.add_bitflip_error(p)
-        # qc.draw()
-        results.append(qc.run_once())
-    success_rate_1qb.append(results.count('0')/len(results))
+# success_rate_1qb = []
+# for p in np.arange(0, 1, 0.05):
+#     results = []
+#     for i in range(10000):
+#         qc = SingleQubit()
+#         qc.add_bitflip_error(p)
+#         # qc.draw()
+#         results.append(qc.run_once())
+#     success_rate_1qb.append(results.count('0')/len(results))
 
 # plot_results(success_rate_1qb, "single qubit")
 # plt.plot(np.arange(0, 1, 0.05), success_rate, label="with correction (3 qubits)")
@@ -502,23 +502,23 @@ for p in np.arange(0, 1, 0.05):
 # plt.show()
 
 # # Testing PhaseFlip Code with hand-added errors
-success_rate = []
-for p in np.arange(0, 1, 0.05):
-    qc = PhaseFlip([1,0])
-    for i in range(10000):
-        qc.add_error(p)
-        qc.correct_error()
-        qc.test_correction()
-        qc.reset()
-    success_rate.append(qc.get_accuracy())
+# success_rate = []
+# for p in np.arange(0, 1, 0.05):
+#     qc = PhaseFlip([1,0])
+#     for i in range(10000):
+#         qc.add_error(p)
+#         qc.correct_error()
+#         qc.test_correction()
+#         qc.reset()
+#     success_rate.append(qc.get_accuracy())
 
-plt.plot(np.arange(0, 1, 0.05), success_rate, label="with correction (3 qubits)")
-plt.plot(np.arange(0, 1, 0.05), success_rate_1qb, label="no correction (1 qubit)")
-plt.title("3-qubit phase flip code")
-plt.ylabel("Fidelity")
-plt.xlabel("error probability")
-plt.legend()
-plt.show()
+# plt.plot(np.arange(0, 1, 0.05), success_rate, label="with correction (3 qubits)")
+# plt.plot(np.arange(0, 1, 0.05), success_rate_1qb, label="no correction (1 qubit)")
+# plt.title("3-qubit phase flip code")
+# plt.ylabel("Fidelity")
+# plt.xlabel("error probability")
+# plt.legend()
+# plt.show()
 
 
 # # Testing BitFlip Code on noisy X Gate/Z Gate
@@ -539,10 +539,10 @@ plt.show()
 
 
 # # Testing BitFlip2 Code
-# qc = BitFlip2()
-# # qc.x_gate()
-# # qc.correct_error()
-# qc.draw()
+qc = BitFlip2()
+# qc.x_gate()
+# qc.correct_error()
+qc.draw()
 
 # qc.run_simulation(100,1,'1')
 
