@@ -174,7 +174,59 @@
 
 \section{The 7-Qubit Code}
 \begin{frame}
-    \frametitle{7-Qubit Code}
+  \frametitle{7-Qubit Code}
+  Encodes 1 logical qubit using 7 physical qubits:
+  {\tiny
+    \begin{align*}
+      \ket{\overline{0}} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+      \ket{\overline{1}} &= \frac{\ket{1111111}+\ket{0101010}+\ket{1001100}+\ket{0011001}+\ket{1110000}+\ket{0100101}+\ket{1000011}+\ket{0010110}}{\sqrt{8}}
+    \end{align*}
+    \begin{align*}
+      H^{\otimes 7}\ket{\overline{0}} &= \frac{\ket{\overline{0}}+\ket{\overline{1}}}{\sqrt{2}} \\
+      H^{\otimes 7}\ket{\overline{1}} &= \frac{\ket{\overline{0}}-\ket{\overline{1}}}{\sqrt{2}}
+    \end{align*}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{7-Qubit Code}
+  \vspace{-1cm}
+  {\tiny
+    \begin{align*}
+      \ket{\overline{0}} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+      \ket{\overline{1}} &= \frac{\ket{1111111}+\ket{0101010}+\ket{1001100}+\ket{0011001}+\ket{1110000}+\ket{0100101}+\ket{1000011}+\ket{0010110}}{\sqrt{8}}
+    \end{align*}
+    \begin{align*}
+      H^{\otimes 7}\ket{\overline{0}} &= \frac{\ket{\overline{0}}+\ket{\overline{1}}}{\sqrt{2}} \\
+      H^{\otimes 7}\ket{\overline{1}} &= \frac{\ket{\overline{0}}-\ket{\overline{1}}}{\sqrt{2}}
+    \end{align*}
+  }
+  \begin{itemize}
+  \item Of the 16 bit strings above, any two differ by $\geq 3$ bits
+  \item Intuition: therefore a single bit flip can be recovered
+    \begin{itemize}
+    \item $X$ error flips bit in $\ket{\overline{0}},\ket{\overline{1}}$
+    \item $Z$ error flips bit in $H^{\otimes 7}\ket{\overline{0}},H^{\otimes 7}\ket{\overline{1}}$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}{7-Qubit Code: Intuition}
+%   Example: single bit flip on $1010101$ gives $1011101$
+%   \begin{center}
+%     \begin{tabular}{ccc}
+%       & Bit string & Number bits that disagree \\
+%       \hline
+%       Want to decode: & 1011101 & \\
+%       \hline
+%       & 101\textcolor{red}{0}101 & 1 \\
+%       & \textcolor{red}{0}0\textcolor{red}{0}\textcolor{red}{0}\textcolor{red}{0}0\textcolor{red}{0} & 5 \\
+%     \end{tabular}
+%   \end{center}
+% \end{frame}
+
+\begin{frame}{Example recovery for $X$ error in qubit 3}
+  TODO
 \end{frame}
 
 \end{document}
