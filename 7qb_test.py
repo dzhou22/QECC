@@ -113,6 +113,14 @@ def init_log1(circuit, codequbits):
     init_log0(circuit, codequbits)
     circuit.x(codequbits)
 
+def init_arbitrary(circuit, codequbits):
+    '''Initialize 7-qubit logical state to the physical state in
+    codequbits[0], assuming all other qubits are set to 0
+    '''
+    apply_matrix(np.matrix([[0, 0, 0, 0, 1, 1]]).getT(),
+                 codequbits[[0]], codequbits[1:], circuit)
+    init_log0(circuit, codequbits)
+    
 def correct_flips(circuit, codequbits, flipqubits):
     '''Correct flips for the 7-qubit code
     '''
@@ -318,12 +326,13 @@ aqp = QuantumRegister(3, 'ancillaphase')
 cc = ClassicalRegister(7, 'classic')
 
 init0_circ = QuantumCircuit(cq, aqf, aqp, cc)
-init_log0(init0_circ, cq)
+init_arbitrary(init0_circ, cq)
 deinit0_circ = init0_circ.inverse()
 # init0_circ.draw(output='mpl').show()
 # deinit0_circ.draw(output='mpl').show()
 init1_circ = QuantumCircuit(cq, aqf, aqp, cc)
-init_log1(init1_circ, cq)
+init1_circ.x(cq[0])
+init_arbitrary(init1_circ, cq)
 deinit1_circ = init1_circ.inverse()
 # init1_circ.draw(output='mpl').show()
 # deinit1_circ.draw(output='mpl').show()
