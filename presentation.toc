@@ -1,4 +1,4 @@
 \beamer@sectionintoc {1}{Introduction and Review of Quantum Error Correction}{3}{0}{1}
 \beamer@sectionintoc {2}{The 3-Qubit Codes}{5}{0}{2}
-\beamer@sectionintoc {3}{The Shor Code}{7}{0}{3}
-\beamer@sectionintoc {4}{The 7-Qubit Code}{8}{0}{4}
+\beamer@sectionintoc {3}{The Shor Code}{10}{0}{3}
+\beamer@sectionintoc {4}{The 7-Qubit Code}{11}{0}{4}
