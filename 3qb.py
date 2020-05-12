@@ -539,10 +539,10 @@ def plot_results(results, title):
 
 
 # # Testing BitFlip2 Code
-qc = BitFlip2()
-# qc.x_gate()
-qc.correct_error()
-qc.draw()
+# qc = BitFlip2()
+# # qc.x_gate()
+# qc.correct_error()
+# qc.draw()
 
 # qc.run_simulation(100,1,'1')
 
@@ -567,19 +567,19 @@ qc.draw()
 # print("running on london...")
 # print("accuracy:", qc.run_real_device('ibmq_london', 8192, '1')) #error
 # ====RESULT:==== accuracy: 0.8560791015625
-print("running on burlington...")
-print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '1')) # error
+# print("running on burlington...")
+# print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '0')) # error
 # ====RESULT:==== 
 # print("running on vigo...")
 # print("accuracy:", qc.run_real_device('ibmq_vigo', 8192, '1'))
 # ====RESULT:==== accuracy: 0.80419921875
 
 # # Let's compare to a single qubit with no error correction:
-# qr = QuantumRegister(1)
-# cr = ClassicalRegister(1)
-# single_qb = QuantumCircuit(qr, cr)
+qr = QuantumRegister(1)
+cr = ClassicalRegister(1)
+single_qb = QuantumCircuit(qr, cr)
 # single_qb.x(qr[0])
-# single_qb.measure(0, 0)
+single_qb.measure(0, 0)
 
 # simulation:
 # success_rate = []
@@ -603,13 +603,13 @@ print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '1')) # error
 # device = provider.get_backend('ibmq_rome')
 # device = provider.get_backend('ibmq_athens')
 # device = provider.get_backend('ibmq_london')
-# device = provider.get_backend('ibmq_burlington')
+device = provider.get_backend('ibmq_burlington')
 
-# device = provider.get_backend('ibmq_vigo')
-# print("running...")
-# job = execute(single_qb, device, shots=8192)
-# hist = job.result().get_counts()
-# print("accuracy:", hist.get('1')/8192)
+device = provider.get_backend('ibmq_vigo')
+print("running...")
+job = execute(single_qb, device, shots=8192)
+hist = job.result().get_counts()
+print("accuracy:", hist.get('1')/8192)
 
 # ====RESULT (ourense):==== accuracy: 0.96875
 # ====RESULT (essex):==== accuracy: 0.958740234375

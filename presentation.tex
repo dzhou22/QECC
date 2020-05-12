@@ -253,9 +253,20 @@
 \begin{frame}
     \frametitle{The Shor Code}
     \begin{itemize}
-        \item Can we protect against \textit{arbitrary} errors?
-        \item Yes! $\longrightarrow$ The \textit{Shor code}
-        \item The Shor code combines 3-qubit phase flip and bit flip codes.
+        \item<1-> Can we protect against \textit{arbitrary} errors?
+        \item<2-> Yes! $\longrightarrow$ The \textit{Shor code}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor Code: Encoding}
+    \begin{itemize}
+        \item By combining the 3-qubit phase flip and bit flip codes, the Shor code protects against arbitrary errors.
+        \item The result is a 9-qubit code with codewords 
+        \begin{align*}
+            & \ket{0} \rightarrow \ket{0_L} \equiv \frac{(\ket{000} + \ket{111})(\ket{000} + \ket{111})(\ket{000} + \ket{111})}{2\sqrt{2}}\\
+            & \ket{1}\rightarrow \ket{1_L} \equiv \frac{(\ket{000} - \ket{111})(\ket{000} - \ket{111})(\ket{000} - \ket{111})}{2\sqrt{2}}.
+        \end{align*}
     \end{itemize}
 \end{frame}
 
