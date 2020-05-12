@@ -307,10 +307,10 @@
 \begin{frame}
     \frametitle{The Shor Code: Encoding}
     \begin{itemize}
-        \item By combining the 3-qubit phase flip and bit flip codes, the Shor code protects against arbitrary errors.
-        \item First encode the qubit using the phase flip code: $$\ket{0}\rightarrow\ket{+++},\quad \ket{1}\rightarrow\ket{---}.$$
-        \item Then encode each of those qubits with the bit flip code: $$\ket{+}\rightarrow (\ket{000}+\ket{111})/\sqrt{2},\quad \ket{-}\rightarrow (\ket{000}-\ket{111})/\sqrt{2.}$$
-        \item The result is a 9-qubit code with codewords 
+        \item<1-> By combining the 3-qubit phase flip and bit flip codes, the Shor code protects against arbitrary errors.
+        \item<2-> First encode the qubit using the phase flip code: $$\ket{0}\rightarrow\ket{+++},\quad \ket{1}\rightarrow\ket{---}.$$
+        \item<3-> Then encode each of those qubits with the bit flip code: $$\ket{+}\rightarrow (\ket{000}+\ket{111})/\sqrt{2},\quad \ket{-}\rightarrow (\ket{000}-\ket{111})/\sqrt{2.}$$
+        \item<4-> The result is a 9-qubit code with codewords 
         \begin{align*}
             & \ket{0} \rightarrow \ket{0_L} \equiv \frac{(\ket{000} + \ket{111})(\ket{000} + \ket{111})(\ket{000} + \ket{111})}{2\sqrt{2}}\\
             & \ket{1}\rightarrow \ket{1_L} \equiv \frac{(\ket{000} - \ket{111})(\ket{000} - \ket{111})(\ket{000} - \ket{111})}{2\sqrt{2}}.
@@ -621,6 +621,35 @@
     \pause
   \item Conclusion: TODO
   \end{itemize}
+\end{frame}
+  
+\begin{frame}{7-qubit code: Simulation vs running on quantum computers?}
+    - The states should be clearly defined, but noise dominates the system
+    \begin{center}
+        \includegraphics[width=8cm]{7-melbourne-fidelity}
+    \end{center}
+\end{frame}
+
+\begin{frame}{7-qubit code: Useful with lower error probability}
+  \begin{tikzpicture}
+    \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
+    \node[redblock] (xgate) at (1.75, 0) {X};
+    \node[redblock] (cf) at (3.5, 0) {Correct flip};
+    \node[block] (cp) at (6, 0) {Correct phase};
+    \node[block] (end) at (9, 0) {Decode, measure};
+  \end{tikzpicture}
+  \includegraphics[width=\textwidth]{7-steane-comparison}
+\end{frame}
+
+\begin{frame}{7-qubit code: Adding Error Correction at different Timesteps}
+  \begin{tikzpicture}
+    \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
+    \node[redblock] (xgate) at (1.75, 0) {X};
+    \node[redblock] (cf) at (3.5, 0) {Correct flip};
+    \node[block] (cp) at (6, 0) {Correct phase};
+    \node[block] (end) at (9, 0) {Decode, measure};
+  \end{tikzpicture}
+  \includegraphics[width=\textwidth]{7-schedule-comparison}
 \end{frame}
 
 \end{document}
