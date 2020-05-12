@@ -221,6 +221,12 @@
     \end{minipage}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Analyzing the Bit Flip Code on IBM's Machines}
+    % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
+    TODO
+    
+\end{frame}
 
 
 \begin{frame}
@@ -247,6 +253,46 @@
         \item Phase flip $Z$ acts as bit flip for this encoding!
 
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Phase Flip Code}
+    % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
+    \begin{itemize}
+        \item TODO
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Analyzing the Phase Flip Code: Simulation}
+    % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
+    \begin{itemize}
+        \item Ran tests on Qiskit's simulator
+        \item Probability $p$ ranging from 0 to 1; 10000 trials for each $p$
+        
+        
+    \end{itemize}
+    \begin{minipage}{0.45\textwidth}
+        \begin{figure}[H]
+        \includegraphics[scale=0.4]{3qb-pf-overlay.png}
+        % \caption{\label{fig:blue_rectangle} Rectangle}
+        \end{figure}
+        \end{minipage} \hfill
+        \begin{minipage}{0.45\textwidth}
+        \begin{itemize}
+        \item Observe crossover point at $p=0.5$.
+        \item For $p<0.5$, error correcting code performs better than a single qubit with no correction.
+        \item Nearly identical result to the bit flip code.
+        \end{itemize}
+    \end{minipage}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Analyzing the Phase Flip Code on IBM's Machines}
+   
+    TODO
+    
 \end{frame}
 
 \section{The Shor 9-Qubit Code}
