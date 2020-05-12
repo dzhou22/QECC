@@ -115,22 +115,55 @@
     \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
     \begin{itemize}
         \item Suppose there is a bit flip error after encoding:
-        
+    
+        \vspace{5mm}
+        \hspace{37mm}
+        \Qcircuit @C=1em @R=1.5em {
+        \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw & \multigate{2}{E_{\text{bit}}} & \qw\\ 
+        \lstick{\ket{0}} & \targ & \qw & \qw & \ghost{E_{\text{bit}}} & \qw\\
+        \lstick{\ket{0}} & \qw & \targ & \qw & \ghost{E_{\text{bit}}} & \qw
+        }\vspace{5mm}
+
         \item Error Detection (or \textit{syndrome diagnosis}):
             \begin{itemize}
                 \item we would like to determine which, if any, of the qubits have been corrupted
-                \item we will need 2 ancillary qubits:
+                \item four error syndromes: no error, bit flip on qubit one, bit flip on qubit two, bit flip on qubit three
             \end{itemize}
-        \item Encoding circuit for 3-qubit bit flip code:
-    
-        \vspace{5mm}
-        \hspace{48mm}
-        \Qcircuit @C=1em @R=1.5em {
-        \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw \\ 
-        \lstick{\ket{0}} & \targ & \qw & \qw \\
-        \lstick{\ket{0}} & \qw & \targ & \qw
-        }
 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes: A Review}
+    \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
+    \begin{itemize}
+        \item Error Detection (or \textit{syndrome diagnosis}):
+            \begin{itemize}
+                \item we can diagnose the syndrome using two ancillary qubits:
+                
+            \vspace{5mm}
+            \hspace{10mm}
+            \Qcircuit @C=1em @R=1.5em {
+            \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw & \multigate{2}{E_{\text{bit}}} & \qw & \ctrl{3} & \qw & \ctrl{4} &\qw &\qw\\ 
+            \lstick{\ket{0}} & \targ & \qw & \qw & \ghost{E_{\text{bit}}} & \qw & \qw & \ctrl{2} & \qw & \qw\ & \qw\\
+            \lstick{\ket{0}} & \qw & \targ & \qw & \ghost{E_{\text{bit}}} & \qw &  \qw & \qw & \qw & \ctrl{2} & \qw\\
+            & & & &  &\lstick{\ket{0}} & \targ & \targ & \qw & \qw  & \qw & \meter\\
+            & & & &  &\lstick{\ket{0}} & \qw & \qw & \targ & \targ & \qw &\meter
+            } \vspace{5mm}
+
+            \item Based on measurement results, we know where the error occured.
+            \end{itemize}
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes: A Review}
+    \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
+    \begin{itemize}
+        \item Error Correction (or \textit{recovery}):
+
+            \includegraphics[scale=0.35]{3qb-circuit.png}
     \end{itemize}
 \end{frame}
 
