@@ -17,6 +17,8 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows,shapes}
 \newcommand{\tikzmark}[1]{\tikz[remember picture] \node[coordinate] (#1) {#1};}
+\tikzstyle{block} = [rectangle, draw, text centered, minimum width = 2em, minimum height=4em]
+\tikzstyle{redblock} = [rectangle, draw, fill=red!20, text centered, minimum width = 2em, minimum height=4em]
 
 %Information to be included in the title page:
 \title{Quantum Error Correction}
@@ -345,6 +347,32 @@
 
 \begin{frame}{7-qubit code: Measurement}
   \includegraphics[width=\textwidth]{7qb_end}
+\end{frame}
+
+\begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
+  \begin{tikzpicture}
+    \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
+    \node[redblock] (xgate) at (1.75, 0) {X};
+    \node[block] (cf) at (3.5, 0) {Correct flip};
+    \node[block] (cp) at (6, 0) {Correct phase};
+    \node[block] (end) at (9, 0) {Decode, measure};
+  \end{tikzpicture}
+  \begin{center}
+    \includegraphics[width=8cm]{noisefree_corr}
+  \end{center}
+\end{frame}
+
+\begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
+  \begin{tikzpicture}
+    \node[redblock] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
+    \node[redblock] (xgate) at (1.75, 0) {X};
+    \node[redblock] (cf) at (3.5, 0) {Correct flip};
+    \node[redblock] (cp) at (6, 0) {Correct phase};
+    \node[redblock] (end) at (9, 0) {Decode, measure};
+  \end{tikzpicture}
+  \begin{center}
+    \includegraphics[width=8cm]{noisy_corr}
+  \end{center}
 \end{frame}
 
 \end{document}
