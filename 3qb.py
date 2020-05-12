@@ -541,7 +541,7 @@ def plot_results(results, title):
 # # Testing BitFlip2 Code
 qc = BitFlip2()
 # qc.x_gate()
-# qc.correct_error()
+qc.correct_error()
 qc.draw()
 
 # qc.run_simulation(100,1,'1')
@@ -567,7 +567,8 @@ qc.draw()
 # print("running on london...")
 # print("accuracy:", qc.run_real_device('ibmq_london', 8192, '1')) #error
 # ====RESULT:==== accuracy: 0.8560791015625
-# print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '1')) # error
+print("running on burlington...")
+print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '1')) # error
 # ====RESULT:==== 
 # print("running on vigo...")
 # print("accuracy:", qc.run_real_device('ibmq_vigo', 8192, '1'))
