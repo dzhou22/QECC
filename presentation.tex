@@ -39,7 +39,7 @@
             \begin{itemize}
                 \item \textit{e.g.}, classical computers, modems, CD players, etc.
             \end{itemize}
-        \item 
+        \item Noise is still a problem in quantum information
         \item Key idea: to protect a message against noise, \textit{encode} the message by adding redundant information; even if some information is corrupted, redundancy allows us to \textit{decode} and recover the original message
     \end{itemize}
 \end{frame}
@@ -49,8 +49,15 @@
     \begin{itemize}
         \item Goals: 
         \begin{itemize}
-            \item to implement various quantum error-correcting codes (3-qubit, 9-qubit, 7-qubit)
-            \item to analyze and compare their performances: \textit{when are they effective?}
+            \item to implement various quantum error-correcting codes
+            \begin{itemize}
+                \item we chose the 3-qubit, 9-qubit, 7-qubit codes
+            \end{itemize}
+            \item to analyze and compare their performances 
+            \begin{itemize}
+                \item \textit{when are they effective?}
+                \item \textit{when should we use error-correcting codes?}
+            \end{itemize} 
         \end{itemize}
         \item Tools:
         \begin{itemize}
@@ -62,18 +69,42 @@
 
 \section{The 3-Qubit Codes}
 \begin{frame}
-    \frametitle{3-qubit codes}
-    Classical inspiration: repetition codes and majority voting
+    \frametitle{3-Qubit Codes: A Review}
+    \textbf{Classical Inspiration}
+    \begin{itemize}
+        \item Encoding by \textit{repetition codes}:
+        \begin{align*}
+            &0 \rightarrow 000 \\
+            &1 \rightarrow 111.
+        \end{align*}
+        \item Decoding by \textit{majority voting}:
+        \begin{align*}
+            \textit{Ex.: }\,\, 001 \rightarrow 0.
+        \end{align*}
+        \item Analysis: Let $p$ be the probability that a bit is flipped. This method fails when 2 or more bits are flipped, which occurs with probability $3p^2(1-p)+p^3$, so the probability of error is $p_e = 3p^2-2p^3$. Then this method is preferred when $p_e < p$, or $p < 1/2$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes: A Review}
+    \textbf{The Quantum Version: 3-Qubit Bit Flip Code}
+    \begin{itemize}
+        \item Encoding:
+        \begin{align*}
+            &\ket{0} \rightarrow \ket{0_L} \equiv \ket{000} \\
+            &\ket{1} \rightarrow \ket{1_L} \equiv \ket{111}.
+        \end{align*}
+    \end{itemize}
 \end{frame}
 
 \section{The Shor Code}
 \begin{frame}
-    \frametitle{The Shor code}
+    \frametitle{The Shor Code}
 \end{frame}
 
 \section{The 7-Qubit Code}
 \begin{frame}
-    \frametitle{7-qubit code}
+    \frametitle{7-Qubit Code}
 \end{frame}
 
 \end{document}

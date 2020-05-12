@@ -146,6 +146,13 @@ class Nine:
         print(hist)
         print(result)
 
+    def add_error(self, p):
+        if (random() < p):
+            if (random() < 0.5):
+                self.qc.x(self.qr[0])
+            else:
+                self.qc.z(self.qr[0])
+
 class SingleQubit():
 
     def __init__(self):
@@ -164,6 +171,13 @@ class SingleQubit():
     def add_phaseflip_error(self, p):
         if (random() < p):
             self.qc.z(self.qr[0])
+
+    def add_error(self, p):
+        if (random() < p):
+            if (random() < 0.5):
+                self.qc.x(self.qr[0])
+            else:
+                self.qc.z(self.qr[0])
 
     def run_once(self):
         self.qc.measure(0,0)
@@ -198,12 +212,11 @@ def fidelity(desired_counts, actual_counts):
 
 success_rates9 = []
 
-for p in np.arange(0, 0.04, 0.001):
+for p in np.arange(0, 0.25, 0.01):
     results = []
-    for i in range(10000):
+    for i in range(1000):
         qc = Nine()
-        qc.add_bitflip(p)
-        qc.add_phaseflip(p)
+        qc.add_error(p)
         qc.bitflip_shor9(1)
         qc.bitflip_shor9(2)
         qc.bitflip_shor9(3)
@@ -215,18 +228,18 @@ for p in np.arange(0, 0.04, 0.001):
 
 success_rates1 = []
 
-for p in np.arange(0, 0.04, 0.001):
+for p in np.arange(0, 0.25, 0.01):
     results = []
-    for i in range(10000):
+    for i in range(1000):
         qc = SingleQubit()
-        qc.add_bitflip_error(p)
+        qc.add_error(p)
         # qc.draw()
         results.append(qc.run_once())
     success_rates1.append(results.count('0')/len(results))
 
 
-plt.plot(np.arange(0, 0.04, 0.001), success_rates9, label="with correction (9 qubits)")
-plt.plot(np.arange(0, 0.04, 0.001), success_rates1, label="no correction (1 qubit)")
+plt.plot(np.arange(0, 0.2, 0.01), success_rates9, label="with correction (9 qubits)")
+plt.plot(np.arange(0, 0.2, 0.01), success_rates1, label="no correction (1 qubit)")
 plt.title("9-qubit code")
 plt.ylabel("Fidelity")
 plt.xlabel("error probability")
