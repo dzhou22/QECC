@@ -14,6 +14,10 @@
 
 \usepackage{qcircuit}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+\newcommand{\tikzmark}[1]{\tikz[remember picture] \node[coordinate] (#1) {#1};}
+
 %Information to be included in the title page:
 \title{Quantum Error Correction}
 \author[GGHLZ]{Louis Golowich \and Wenjie Gong \and Ari Hatzimemos\\ Dylan Li \and Dylan Zhou}
@@ -226,7 +230,79 @@
 % \end{frame}
 
 \begin{frame}{Example recovery for $X$ error in qubit 3}
-  TODO
+  
+  {\tiny
+    \begin{align*}
+      \ket{\overline{0}} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+      X^{(3)}\ket{\overline{0}} &=
+                                  \frac{\ket{00\textcolor{red}{1}0000}\tikzmark{t1}
+                                  +\ket{10\textcolor{red}{0}0101}\tikzmark{t2}
+                                  +\ket{01\textcolor{red}{0}0011}\tikzmark{t3}
+                                  +\ket{11\textcolor{red}{1}0110}\tikzmark{t4}
+                                  +\ket{00\textcolor{red}{1}1111}\tikzmark{t5}
+                                  +\ket{10\textcolor{red}{0}1010}\tikzmark{t6}
+                                  +\ket{01\textcolor{red}{0}1100}\tikzmark{t7}
+                                  +\ket{11\textcolor{red}{1}1001}\tikzmark{t8}
+                                  }{\sqrt{8}}
+    \end{align*}
+
+    \begin{equation*}
+      \begin{pmatrix}
+        1&0&1&0&1&0&1\\
+        0&1&1&0&0&1&1\\
+        0&0&0&1&1&1&1
+      \end{pmatrix}
+      \begin{pmatrix}\;\;\\ \\ \tikzmark{n1} \\ \\ \\ \\\end{pmatrix}
+      = \begin{pmatrix}1\\1\\0\end{pmatrix} = \ket{3} \text{ (in binary)}
+    \end{equation*}
+  }
+  \begin{tikzpicture}[remember picture,overlay]   %% use here too
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t1) -- ([xshift=-2mm,yshift=0mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t2) -- ([xshift=-2mm,yshift=1mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t3) -- ([xshift=-1mm,yshift=2mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t4) -- ([xshift=-1mm,yshift=3mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t5) -- ([xshift=1mm,yshift=3mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t6) -- ([xshift=1mm,yshift=2mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
+    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Example recovery for $X$ error}
+  \begin{itemize}
+  \item In fact:
+    \begin{align*}
+      \begin{pmatrix}
+        1&0&1&0&1&0&1\\
+        0&1&1&0&0&1&1\\
+        0&0&0&1&1&1&1
+      \end{pmatrix}
+                     X^{(i)}\ket{\overline{0}} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
+    \end{align*}
+  \item Let $H$ be matrix above. To recover from single $X$ error, apply map
+    \begin{equation*}
+      \ket{v}\otimes\ket{0}_A\mapsto\ket{v}\otimes\ket{Hv}_A
+    \end{equation*}
+    and measure subsystem $A$. Result will be index $i$ of bit flip, in binary!
+  \item Also works for logical state $1$, and for phase flips.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{7-qubit code: Why does it work?}
+  \begin{itemize}
+  \item The kernel of the matrix
+    \begin{equation*}
+      H=\begin{pmatrix}
+        1&0&1&0&1&0&1\\
+        0&1&1&0&0&1&1\\
+        0&0&0&1&1&1&1
+      \end{pmatrix}\in\mathbb{F}_2^{3\times 7}
+    \end{equation*}
+    consists of the 16 bit strings defining $\ket{\overline{0}},\ket{\overline{1}}$
+  \item A bit flip at position $i$ of a vector $v$ adds the $i$th row of $H$ to $Hv$ (basic linear algebra)
+  \item The $i$th row of $H$ is $i$ in binary
+  \item Same reasoning for phase flips = bit flips in rotated basis
+  \end{itemize}
 \end{frame}
 
 \end{document}
