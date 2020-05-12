@@ -305,4 +305,46 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{7-qubit code: Initialization}
+  
+  {\tiny
+    \begin{align*}
+      \ket{\overline{0}} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+      \ket{\overline{1}} &= \frac{\ket{1111111}+\ket{0101010}+\ket{1001100}+\ket{0011001}+\ket{1110000}+\ket{0100101}+\ket{1000011}+\ket{0010110}}{\sqrt{8}}
+    \end{align*}
+  }
+  \begin{center}
+    \begin{columns}
+      \begin{column}{.1\textwidth}
+        \vspace{.15cm}
+        \begin{tabular}{c}
+          $\ket{\psi}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+          $\ket{0}\rightarrow$ \\
+        \end{tabular}
+      \end{column}
+      \hspace{-1cm}
+      \begin{column}{.8\textwidth}
+        \includegraphics[width=\textwidth]{7qb_init}
+      \end{column}
+    \end{columns}
+  \end{center}
+\end{frame}
+
+\begin{frame}{7-qubit code: Flip correction}
+  \includegraphics[width=\textwidth]{7qb_flip}
+\end{frame}
+
+\begin{frame}{7-qubit code: Phase correction}
+  \includegraphics[width=\textwidth]{7qb_phase}
+\end{frame}
+
+\begin{frame}{7-qubit code: Measurement}
+  \includegraphics[width=\textwidth]{7qb_end}
+\end{frame}
+
 \end{document}

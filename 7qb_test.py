@@ -202,6 +202,16 @@ def test_circs():
                      Aer.get_backend('qasm_simulator'), shots=shots).result().get_counts()
     print_results('1 correction, rotation error', counts, shots)
 
+def save_circs():
+    '''Save circuits to png files'''
+    barrier_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    barrier_circ.barrier()
+    init0_circ.draw(output='mpl', idle_wires=False).savefig('7qb_init.png')
+    flip_circ.draw(output='mpl', idle_wires=False, fold=35).savefig('7qb_flip.png')
+    phase_circ.draw(output='mpl', idle_wires=False, fold=35).savefig('7qb_phase.png')
+    end_circ = deinit0_circ + barrier_circ + measure_circ
+    end_circ.draw(output='mpl', idle_wires=False).savefig('7qb_end.png')
+
 def get_fidelities(noise_model):
     '''Compute fidelity of a single qubit x gate with and without error
     correction in the presence of depolarizing noie. The x gate is
@@ -350,6 +360,7 @@ correct_phases(phase_circ, cq, aqp)
 # phase_circ.draw(output='mpl').show()
 
 # test_circs()
+save_circs()
 
 plot_fidelities_noisefree_corr()
 plot_fidelities_noisy_corr()
