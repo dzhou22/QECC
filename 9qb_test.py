@@ -47,6 +47,24 @@ class Nine:
             self.qc.cx(i, i+1)
             self.qc.cx(i, i+2)
 
+    def inverse(self):
+        for i in range(6, -1, -3):
+            self.qc.cx(i, i+2).inverse()
+            self.qc.cx(i, i+1).inverse()
+            self.qc.h(i).inverse()
+
+        self.qc.cx(0, 6).inverse()
+        self.qc.cx(0, 3).inverse()
+        
+    def measure_first_qubit(self):
+        cr = ClassicalRegister(1)
+        self.qc = self.qc + QuantumCircuit(cr)
+        self.qc.measure(0, cr)
+        emulator = Aer.get_backend('qasm_simulator')
+        job = execute(self.qc, emulator, shots=1)
+        hist = job.result().get_counts()
+        return list(hist.keys())[0]
+
     def bitflip_shor9(self, block, correction = True):
         '''
         initial circuit encodes state into logical qubits
@@ -109,10 +127,59 @@ class Nine:
         self.qc = self.qc + QuantumCircuit(cr)
         self.qc.measure(range(9), cr)
         emulator = Aer.get_backend('qasm_simulator')
-        job = execute(self.qc, emulator, shots=1000)
+        job = execute(self.qc, emulator, shots=1)
         hist = job.result().get_counts()
-        return hist
+        return list(hist.keys())[0]
 
+    def add_circuit(self, circuit):
+        self.qc = self.qc + circuit
+
+    def compute_accuracy(self, target_state='0', shots=8192):
+        self.qc.barrier()
+        cr = ClassicalRegister(1)
+        self.qc = self.qc + QuantumCircuit(cr)
+        self.qc.measure(0, cr)
+        emulator = Aer.get_backend('qasm_simulator')
+        job = execute(self.qc, emulator, shots=shots)
+        hist = job.result().get_counts()
+        result = hist.keys()[0]
+        print(hist)
+        print(result)
+
+class SingleQubit():
+
+    def __init__(self):
+        self.qr = QuantumRegister(1)
+        self.cr = ClassicalRegister(1)
+        self.qc = QuantumCircuit(self.qr, self.cr)
+        self.results = []
+
+    def x_gate(self):
+        self.qc.x(self.qr[0])
+
+    def add_bitflip_error(self, p):
+        if (random() < p):
+            self.qc.x(self.qr[0])
+    
+    def add_phaseflip_error(self, p):
+        if (random() < p):
+            self.qc.z(self.qr[0])
+
+    def run_once(self):
+        self.qc.measure(0,0)
+        emulator = Aer.get_backend('qasm_simulator')
+        job = execute(self.qc, emulator, shots=1)
+        hist = job.result().get_counts()
+        result = list(hist.keys())[0]
+        return result
+        # print(hist)
+        # return hist.get(target_state)/shots
+
+    def get_accuracy(self):
+        return self.results.count('0')/len(self.results)
+
+    def draw(self):
+        print(self.qc.draw())
 
 def fidelity(desired_counts, actual_counts):
   des_tot = sum(list(desired_counts.values()))
@@ -129,14 +196,50 @@ def fidelity(desired_counts, actual_counts):
 
 # Testing
 
-fidelities = []
+success_rates9 = []
 
-qc = Nine()
-qc.bitflip_shor9(1)
-qc.bitflip_shor9(2)
-qc.bitflip_shor9(3)
-qc.phaseflip_shor9()
-desired = qc.test_correction()
+for p in np.arange(0, 0.04, 0.001):
+    results = []
+    for i in range(10000):
+        qc = Nine()
+        qc.add_bitflip(p)
+        qc.add_phaseflip(p)
+        qc.bitflip_shor9(1)
+        qc.bitflip_shor9(2)
+        qc.bitflip_shor9(3)
+        qc.phaseflip_shor9()
+        qc.inverse()
+        results.append(qc.measure_first_qubit()[0:1])
+    success_rates9.append(results.count('0')/len(results))
+
+
+success_rates1 = []
+
+for p in np.arange(0, 0.04, 0.001):
+    results = []
+    for i in range(10000):
+        qc = SingleQubit()
+        qc.add_bitflip_error(p)
+        # qc.draw()
+        results.append(qc.run_once())
+    success_rates1.append(results.count('0')/len(results))
+
+
+plt.plot(np.arange(0, 0.04, 0.001), success_rates9, label="with correction (9 qubits)")
+plt.plot(np.arange(0, 0.04, 0.001), success_rates1, label="no correction (1 qubit)")
+plt.title("9-qubit code")
+plt.ylabel("Fidelity")
+plt.xlabel("error probability")
+plt.legend()
+plt.show()
+
+
+# qc.draw()
+# qc.bitflip_shor9(1)
+# qc.bitflip_shor9(2)
+# qc.bitflip_shor9(3)
+# qc.phaseflip_shor9()
+# desired = qc.test_correction()
 
 # qc2 = Nine()
 # qc2.add_bitflip(0.01)
@@ -145,25 +248,27 @@ desired = qc.test_correction()
 # qc2.bitflip_shor9(2)
 # qc2.bitflip_shor9(3)
 # qc2.phaseflip_shor9()
-# actual = qc2.test_correction()
+# qc2.add_circuit(inverse)
+# qc2.draw()
+# qc2.test_correction()
 
 # print(fidelity(desired, actual))
 
-for p in np.arange(0, 0.2, 0.001):
-    qc2 = Nine()
-    qc2.add_bitflip(p)
-    qc2.add_phaseflip(p)
-    qc2.bitflip_shor9(1)
-    qc2.bitflip_shor9(2)
-    qc2.bitflip_shor9(3)
-    qc2.phaseflip_shor9()
-    actual = qc2.test_correction()
+# for p in np.arange(0, 0.2, 0.001):
+#     qc2 = Nine()
+#     qc2.add_bitflip(p)
+#     qc2.add_phaseflip(p)
+#     qc2.bitflip_shor9(1)
+#     qc2.bitflip_shor9(2)
+#     qc2.bitflip_shor9(3)
+#     qc2.phaseflip_shor9()
+#     actual = qc2.test_correction()
 
-    fidelities.append(fidelity(desired, actual))
+#     fidelities.append(fidelity(desired, actual))
 
-plt.plot(np.arange(0, 0.2, 0.001), fidelities)
-plt.title("9 qubit code")
-plt.ylabel("Fidelity")
-plt.xlabel("error probability")
-plt.show()
+# plt.plot(np.arange(0, 0.2, 0.001), fidelities)
+# plt.title("9 qubit code")
+# plt.ylabel("Fidelity")
+# plt.xlabel("error probability")
+# plt.show()
 # qc.draw()

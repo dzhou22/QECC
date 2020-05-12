@@ -2,6 +2,15 @@
 \usetheme{Madrid}
 \usepackage[utf8]{inputenc}
 \usepackage{physics}
+\usepackage{csquotes}
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip1em
+  \hbox{}\nobreak\hfill #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}\openautoquote\hspace*{-.7ex}}
+  {\unskip\closeautoquote\vspace*{1mm}\signed{\usebox\mybox}\end{quote}}
 
 %Information to be included in the title page:
 \title{Quantum Error Correction}
@@ -18,11 +27,53 @@
     \tableofcontents
 \end{frame}
 
+\section{Introduction and Review of Quantum Error Correction}
 \begin{frame}
 \frametitle{Introduction}
-text here
+    \begin{aquote}{William Blake}
+        To be an Error and to be Cast out is part of God's Design.
+    \end{aquote}
+    \vspace{15mm}
+    \begin{itemize}
+        \item Noise as a longstanding problem in information processing systems
+            \begin{itemize}
+                \item \textit{e.g.}, classical computers, modems, CD players, etc.
+            \end{itemize}
+        \item 
+        \item Key idea: to protect a message against noise, \textit{encode} the message by adding redundant information; even if some information is corrupted, redundancy allows us to \textit{decode} and recover the original message
+    \end{itemize}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Project Framework}
+    \begin{itemize}
+        \item Goals: 
+        \begin{itemize}
+            \item to implement various quantum error-correcting codes (3-qubit, 9-qubit, 7-qubit)
+            \item to analyze and compare their performances: \textit{when are they effective?}
+        \end{itemize}
+        \item Tools:
+        \begin{itemize}
+            \item Python's Qiskit package
+            \item IBM's quantum machines
+        \end{itemize}
+    \end{itemize}
+\end{frame}
 
+\section{The 3-Qubit Codes}
+\begin{frame}
+    \frametitle{3-qubit codes}
+    Classical inspiration: repetition codes and majority voting
+\end{frame}
+
+\section{The Shor Code}
+\begin{frame}
+    \frametitle{The Shor code}
+\end{frame}
+
+\section{The 7-Qubit Code}
+\begin{frame}
+    \frametitle{7-qubit code}
+\end{frame}
 
 \end{document}

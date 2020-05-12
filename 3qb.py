@@ -426,6 +426,40 @@ class PhaseFlip2:
         # print statistics
         return hist.get(target_state)/shots
 
+class SingleQubit():
+
+    def __init__(self):
+        self.qr = QuantumRegister(1)
+        self.cr = ClassicalRegister(1)
+        self.qc = QuantumCircuit(self.qr, self.cr)
+        self.results = []
+
+    def x_gate(self):
+        self.qc.x(self.qr[0])
+
+    def add_bitflip_error(self, p):
+        if (random() < p):
+            self.qc.x(self.qr[0])
+    
+    def add_phaseflip_error(self, p):
+        if (random() < p):
+            self.qc.z(self.qr[0])
+
+    def run_once(self):
+        self.qc.measure(0,0)
+        emulator = Aer.get_backend('qasm_simulator')
+        job = execute(self.qc, emulator, shots=1)
+        hist = job.result().get_counts()
+        result = list(hist.keys())[0]
+        return result
+        # print(hist)
+        # return hist.get(target_state)/shots
+
+    def get_accuracy(self):
+        return self.results.count('0')/len(self.results)
+
+    def draw(self):
+        print(self.qc.draw())
 
 def plot_results(results, title):
     plt.plot(np.arange(0, 1, 0.05), results)
@@ -437,8 +471,8 @@ def plot_results(results, title):
 # # Testing BitFlip Code with hand-added errors
 # success_rate = []
 # for p in np.arange(0, 1, 0.05):
-#     qc = BitFlip([1,0])
-#     qc = BitFlip2()
+#     qc = BitFlip()
+#     # qc = BitFlip2()
 #     for i in range(10000):
 #         qc.add_error(p)
 #         qc.correct_error()
@@ -448,29 +482,43 @@ def plot_results(results, title):
 
 # plot_results(success_rate, '3-qubit bit flip code')
 
-qc = BitFlip2()
-qc.add_error(0.5)
-qc.correct_error()
-qc.test_correction()
-qc.draw()
-print(qc.get_accuracy()) 
+# Let's compare to a single qubit with no error correction:
+success_rate_1qb = []
+for p in np.arange(0, 1, 0.05):
+    results = []
+    for i in range(10000):
+        qc = SingleQubit()
+        qc.add_bitflip_error(p)
+        # qc.draw()
+        results.append(qc.run_once())
+    success_rate_1qb.append(results.count('0')/len(results))
 
-# # Testing PhaseFlip Code with hand-added errors
-# success_rate = []
-# for p in np.arange(0, 1, 0.05):
-#     qc = PhaseFlip([1,0])
-#     for i in range(10000):
-#         qc.add_error(p)
-#         qc.correct_error()
-#         qc.test_correction()
-#         qc.reset()
-#     success_rate.append(qc.get_accuracy())
-
-# plt.plot(np.arange(0, 1, 0.05), success_rate)
-# plt.title("3-qubit phase flip code")
+# plot_results(success_rate_1qb, "single qubit")
+# plt.plot(np.arange(0, 1, 0.05), success_rate, label="with correction (3 qubits)")
+# plt.plot(np.arange(0, 1, 0.05), success_rate_1qb, label="no correction (1 qubit)")
+# plt.title("3 qubit bit flip code")
 # plt.ylabel("Fidelity")
 # plt.xlabel("error probability")
 # plt.show()
+
+# # Testing PhaseFlip Code with hand-added errors
+success_rate = []
+for p in np.arange(0, 1, 0.05):
+    qc = PhaseFlip([1,0])
+    for i in range(10000):
+        qc.add_error(p)
+        qc.correct_error()
+        qc.test_correction()
+        qc.reset()
+    success_rate.append(qc.get_accuracy())
+
+plt.plot(np.arange(0, 1, 0.05), success_rate, label="with correction (3 qubits)")
+plt.plot(np.arange(0, 1, 0.05), success_rate_1qb, label="no correction (1 qubit)")
+plt.title("3-qubit phase flip code")
+plt.ylabel("Fidelity")
+plt.xlabel("error probability")
+plt.legend()
+plt.show()
 
 
 # # Testing BitFlip Code on noisy X Gate/Z Gate

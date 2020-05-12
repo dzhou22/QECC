@@ -262,6 +262,12 @@ INPUT /usr/local/texlive/2019/texmf-dist/tex/generic/unicode-data/UnicodeData.tx
 INPUT /dev/null
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
 INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.sty
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.sty
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.def
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.def
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.cfg
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/csquotes/csquotes.cfg
 INPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.aux
 INPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.aux
 OUTPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.aux
@@ -305,6 +311,9 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 INPUT /usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map
 INPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.toc
 INPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.toc
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmssi10.tfm
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmss10.tfm
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/cm/cmssi10.tfm
 OUTPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.nav
 OUTPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.toc
 OUTPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC/presentation.snm
@@ -314,3 +323,4 @@ INPUT /Users/dylanzhou/Documents/Harvard/Classes /Physics 160/Final Project/QECC
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb
