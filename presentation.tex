@@ -262,6 +262,8 @@
     \frametitle{The Shor Code: Encoding}
     \begin{itemize}
         \item By combining the 3-qubit phase flip and bit flip codes, the Shor code protects against arbitrary errors.
+        \item First encode the qubit using the phase flip code: $$\ket{0}\rightarrow\ket{+++},\quad \ket{1}\rightarrow\ket{---}.$$
+        \item Then encode each of those qubits with the bit flip code: $$\ket{+}\rightarrow (\ket{000}+\ket{111})/\sqrt{2},\quad \ket{-}\rightarrow (\ket{000}-\ket{111})/\sqrt{2.}$$
         \item The result is a 9-qubit code with codewords 
         \begin{align*}
             & \ket{0} \rightarrow \ket{0_L} \equiv \frac{(\ket{000} + \ket{111})(\ket{000} + \ket{111})(\ket{000} + \ket{111})}{2\sqrt{2}}\\
@@ -270,24 +272,24 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}
-    \frametitle{The Shor 9-Qubit Code: A Review}
-    \textbf{Encoding}
-        \begin{itemize}
-        \item The goal is to correct an arbitrary single bit error and/or phase error on any of the nine physical qubits.
-        \item The 9-qubit code encodes a single state into a logical state of nine physical qubits, arranged in blocks of three.
-        \item Encoding:
+% \begin{frame}
+%     \frametitle{The Shor 9-Qubit Code: A Review}
+%     \textbf{Encoding}
+%         \begin{itemize}
+%         \item The goal is to correct an arbitrary single bit error and/or phase error on any of the nine physical qubits.
+%         \item The 9-qubit code encodes a single state into a logical state of nine physical qubits, arranged in blocks of three.
+%         \item Encoding:
     
-        \begin{align*}
-            &\ket{0} \rightarrow \ket{0_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}+\ket{111})(\ket{000}+\ket{111})(\ket{000}+\ket{111}) \\
-            &\ket{1} \rightarrow \ket{1_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}-\ket{111})(\ket{000}-\ket{111})(\ket{000}-\ket{111}).
-        \end{align*}
+%         \begin{align*}
+%             &\ket{0} \rightarrow \ket{0_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}+\ket{111})(\ket{000}+\ket{111})(\ket{000}+\ket{111}) \\
+%             &\ket{1} \rightarrow \ket{1_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}-\ket{111})(\ket{000}-\ket{111})(\ket{000}-\ket{111}).
+%         \end{align*}
 
-    \end{itemize}
-\end{frame}
+%     \end{itemize}
+% \end{frame}
 
 \begin{frame}
-    \frametitle{The Shor 9-Qubit Code: A Review}
+    \frametitle{The Shor 9-Qubit Code: Encoding}
         Encoding circuit for 9-qubit code:
         
         \begin{center}
@@ -296,7 +298,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{The Shor 9-Qubit Code: A Review}
+    \frametitle{The Shor 9-Qubit Code: Correcting Errors}
     \textbf{Bit Flip Error Correction}
         \begin{itemize}
             \item On each block of three (i.e. qubits 0-2, 3-5, and 6-8), the 3-qubit circuit is utilized to correct for bit flips.
@@ -309,7 +311,7 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{The Shor 9-Qubit Code: A Review}
+    \frametitle{The Shor 9-Qubit Code: Correcting Phase Errors}
         \begin{itemize}
             \item The phase correction circuit, shown below, converts the qubits from the x-basis to the z-basis and checks parity of each block of two.
             \begin{center}
@@ -320,15 +322,15 @@
 
 
 \begin{frame}
-    \frametitle{The Shor 9-Qubit Code: A Review}
+    \frametitle{The Shor 9-Qubit Code: Correcting Phase Errors}
         \begin{itemize}
             \item The following corrections are performed depending on the measured ancilla for phase flip correction:
             
             \begin{align*}
             &10 \rightarrow \sigma_z \text{ on block 1}\\
             &01 \rightarrow \sigma_z \text{ on block 2}\\
-            &11 \rightarrow \sigma_z \text{ on blocks 1 and 2}\\
-           .\end{align*}
+            &11 \rightarrow \sigma_z \text{ on blocks 1 and 2}.\\
+           \end{align*}
         
             
         \end{itemize}
