@@ -249,7 +249,7 @@
     \end{itemize}
 \end{frame}
 
-\section{The Shor Code}
+\section{The Shor 9-Qubit Code}
 \begin{frame}
     \frametitle{The Shor Code}
     \begin{itemize}
@@ -268,6 +268,97 @@
             & \ket{1}\rightarrow \ket{1_L} \equiv \frac{(\ket{000} - \ket{111})(\ket{000} - \ket{111})(\ket{000} - \ket{111})}{2\sqrt{2}}.
         \end{align*}
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: A Review}
+    \textbf{Encoding}
+        \begin{itemize}
+        \item The goal is to correct an arbitrary single bit error and/or phase error on any of the nine physical qubits.
+        \item The 9-qubit code encodes a single state into a logical state of nine physical qubits, arranged in blocks of three.
+        \item Encoding:
+    
+        \begin{align*}
+            &\ket{0} \rightarrow \ket{0_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}+\ket{111})(\ket{000}+\ket{111})(\ket{000}+\ket{111}) \\
+            &\ket{1} \rightarrow \ket{1_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}-\ket{111})(\ket{000}-\ket{111})(\ket{000}-\ket{111}).
+        \end{align*}
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: A Review}
+        Encoding circuit for 9-qubit code:
+        
+        \begin{center}
+        \includegraphics[scale=0.7]{9qbencoding.PNG}
+        \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: A Review}
+    \textbf{Bit Flip Error Correction}
+        \begin{itemize}
+            \item On each block of three (i.e. qubits 0-2, 3-5, and 6-8), the 3-qubit circuit is utilized to correct for bit flips.
+        \end{itemize}
+        \textbf{Phase Flip Error Correction}
+        \begin{itemize}
+            \item The phase of the first two blocks of three (qubits 0-2 and 3-5) and the second two blocks of three (qubits 3-5 and 6-8) are compared to correct for phase flips.
+            \item The phase correction necessitates two ancillary qubits. Thus, we need 8 ancilla: 6 for bit flip correction, and 2 for phase flip correction.
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: A Review}
+        \begin{itemize}
+            \item The phase correction circuit, shown below, converts the qubits from the x-basis to the z-basis and checks parity of each block of two.
+            \begin{center}
+            \includegraphics[scale=0.5]{9qbphase.PNG}
+            \end{center}
+        \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: A Review}
+        \begin{itemize}
+            \item The following corrections are performed depending on the measured ancilla for phase flip correction:
+            
+            \begin{align*}
+            &10 \rightarrow \sigma_z \text{ on block 1}\\
+            &01 \rightarrow \sigma_z \text{ on block 2}\\
+            &11 \rightarrow \sigma_z \text{ on blocks 1 and 2}\\
+           .\end{align*}
+        
+            
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: Error Correction Methodology}
+        \begin{itemize}
+            \item We only consider error that occurs between the encoding step and the correcting step, thus simulating a memory error.
+            \begin{center}
+                \includegraphics[scale = 0.08]{9qberror.png}
+            \end{center}
+            \item Specifically, we consider a complete phase flip and/or bit flip (i.e. $X$ or $Z$) that occurs independently on each of the 9 physical qubits with probability $p$.
+            \item After the error, we measure the ancilla and apply the appropriate error correcting steps. Finally, we run the encoding circuit in reverse and measure the output to determine fidelity.
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: Simulation Performance with No Error Correction}
+        \begin{itemize}
+            \item Initial state: $\ket{0} \rightarrow \ket{0_L} \equiv \frac{1}{\sqrt{8}}(\ket{000}+\ket{111})(\ket{000}+\ket{111})(\ket{000}+\ket{111})$.
+            \item Fidelity of un-encoded state measured against $\ket{000000000}$.
+            
+            \centering\includegraphics[scale = 0.5]{shor9_nec.pdf}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: Simulation Performance with Error Correction}
+            \centering\includegraphics[scale = 0.7]{shor9_ec.pdf}
 \end{frame}
 
 \section{The 7-Qubit Code}
