@@ -611,6 +611,13 @@
   \includegraphics[width=\textwidth]{7qb_end}
 \end{frame}
 
+\begin{frame}{7-qubit code: Simulation vs running on quantum computers?}
+    - The states should be clearly defined, but noise dominates the system
+    \begin{center}
+        \includegraphics[width=8cm]{7-melbourne-fidelity}
+    \end{center}
+\end{frame}
+
 \begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
   \begin{tikzpicture}
     \node[block] (init) at (0, 0) {Encode $\ket{0_L}$};
@@ -653,15 +660,16 @@
   \item 7-qubit code reduces single gate error rate for depolarization rates lower than detectable by our qiskit simulations ($p\lessapprox 10^{-4}$)
   \end{itemize}
 \end{frame}
-  
-\begin{frame}{7-qubit code: Simulation vs running on quantum computers?}
-    - The states should be clearly defined, but noise dominates the system
-    \begin{center}
-        \includegraphics[width=8cm]{7-melbourne-fidelity}
-    \end{center}
+
+\begin{frame}{7-qubit code: Extending to Multiple Gates}
+    \begin{itemize}
+        \item <1-> Here, we assumed that the $\ket{0}_L$ state was perfectly encoded, before performing up to 200 pairs of X gates on the seven qubits simultaneously
+        \item <2-> In the end, we decoded and we measured the value of the first of the seven qubits to measure its fidelity with the predicted state -> we should end up with $\ket{0}^{\otimes 7}$
+        \item <3-> We compared the fidelity of the error correcting algorithm to a single qubit that goes through up to 200 X rotations
+    \end{itemize}
 \end{frame}
 
-\begin{frame}{7-qubit code: Useful with lower error probability}
+\begin{frame}{7-qubit code: Useful with lower error probabilities}
   \begin{tikzpicture}
     \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
     \node[redblock] (xgate) at (1.75, 0) {X};
@@ -669,7 +677,23 @@
     \node[block] (cp) at (6, 0) {Correct phase};
     \node[block] (end) at (9, 0) {Decode, measure};
   \end{tikzpicture}
-  \includegraphics[width=\textwidth]{7-steane-comparison}
+  \begin{center}
+    \includegraphics[width=9cm]{7-steane-comparison}
+  \end{center}
+\end{frame}
+
+\begin{frame}{7-qubit code: Adding Error Correction at different Timesteps}
+  - Using a noise model with (p=0.001) noise in the x and z-direction per gate 
+  \begin{tikzpicture}
+    \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
+    \node[redblock] (xgate) at (1.75, 0) {X};
+    \node[redblock] (cf) at (3.5, 0) {Correct flip};
+    \node[block] (cp) at (6, 0) {Correct phase};
+    \node[block] (end) at (9, 0) {Decode, measure};
+  \end{tikzpicture}
+  \begin{center}
+    \includegraphics[width=9cm]{7-schedule-comparison.png}
+  \end{center}
 \end{frame}
 
 \begin{frame}{7-qubit code: Adding Error Correction at different Timesteps}
@@ -680,7 +704,18 @@
     \node[block] (cp) at (6, 0) {Correct phase};
     \node[block] (end) at (9, 0) {Decode, measure};
   \end{tikzpicture}
-  \includegraphics[width=\textwidth]{7-schedule-comparison}
+  
+  - Using a noise model with (p=0.01) noise in the x and z-direction per gate 
+  \begin{center}
+    \includegraphics[width=9cm]{7-schedule-comparison-2.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}{7-qubit code: Generalizing to Error Correction}
+    \begin{itemize}
+        \item Ultimately, error correction is useful, but must be intelligently deployed - here, error-correction is heavily sensitive to the noise in each gate
+        \item It may be useful to characterize the thresholds before using error-correcting codes or consider using error-correcting codes continuously throughout a computation
+    \end{itemize}
 \end{frame}
 
 \end{document}
