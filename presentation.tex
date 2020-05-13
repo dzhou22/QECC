@@ -634,7 +634,7 @@
 %   \end{itemize}
 % \end{frame}
 
-\begin{frame}{7-qubit code: Encoding}
+\begin{frame}{7-Qubit Code: Encoding}
   
   {\tiny
     \begin{align*}
@@ -667,19 +667,19 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Flip correction}
+\begin{frame}{7-Qubit Code: Flip Correction}
   \includegraphics[width=\textwidth]{7qb_correction_diagram}
 \end{frame}
 
-\begin{frame}{7-qubit code: Phase correction}
+\begin{frame}{7-Qubit Code: Phase Correction}
   \includegraphics[width=\textwidth]{7qb_phase_correction}
 \end{frame}
 
-\begin{frame}{7-qubit code: Decoding and measurement}
+\begin{frame}{7-Qubit Code: Decoding and mMasurement}
   \includegraphics[width=\textwidth]{7qb_end}
 \end{frame}
 
-\begin{frame}{7-qubit code: Simulation vs running on quantum computers?}
+\begin{frame}{7-Qubit Code: Simulation vs Real Quantum Machine}
     - The states should be clearly defined, but noise dominates the system
     \begin{center}
    	\begin{minipage}[b]{0.47\linewidth}
@@ -692,11 +692,11 @@
     \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code}
+\begin{frame}{7-Qubit Code: Simulation vs Real Quantum Machine}
   \includegraphics[width=\textwidth]{7qb_drake}
 \end{frame}
 
-\begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
+\begin{frame}{7-Qubit Code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
   \begin{tikzpicture}
     \node[block] (init) at (0, 0) {Encode $\ket{0_L}$};
     \node[redblock] (xgate) at (1.75, 0) {X};
@@ -709,7 +709,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
+\begin{frame}{7-Qubit Code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
   \begin{tikzpicture}
     \node[redblock] (init) at (0, 0) {Encode $\ket{0_L}$};
     \node[redblock] (xgate) at (1.75, 0) {X};
@@ -722,7 +722,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Interpretation of fidelities}
+\begin{frame}{7-Qubit Code: Interpretation of Fidelities}
   \begin{itemize}
   \item With no depolarization in correction gates, error correction improves fidelity for depolarization probability $\lessapprox .12$
   \item With depolarization in all gates, error correction never improves fidelity
@@ -741,14 +741,14 @@
 
 \begin{frame}{7-qubit code: Extending to Multiple Gates}
     \begin{itemize}
-        \item  Here, we assumed that the $\ket{0}_L$ state was perfectly encoded, before performing up to 240 X gates on the seven qubits simultaneously
+        \item  Here, we assumed that the $\ket{0}_L$ state was perfectly encoded, before performing up to 240 $X$ gates on the seven qubits simultaneously
         \item We varied how often we applied error correction
-        \item  In the end, we decoded and  measured the value of the first of the seven qubits to measure its fidelity with the predicted state \rightarrow  $\ket{0}$
-        \item We compared the fidelity of the error correcting algorithm to a single qubit that goes through up to 240 X rotations
+        \item  In the end, we decoded and  measured the value of the first of the seven qubits to measure its fidelity with the predicted state $\rightarrow$  $\ket{0}$
+        \item We compared the fidelity of the error correcting algorithm to a single qubit that goes through up to 240 $X$ rotations
     \end{itemize}
 \end{frame}
 
-\begin{frame}{7-qubit code: Useful with lower error probabilities}
+\begin{frame}{7-Qubit Code: Useful with Lower Error Probabilities}
   \begin{center}
   \begin{tikzpicture}
     \node[block] (init) at (0, 0) {Encode $\ket{\overline{0}}$};
@@ -761,7 +761,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Adding Error Correction at different Timesteps}
+\begin{frame}{7-Qubit Code: Adding Error Correction at Different Timesteps}
   - Using a noise model with (p=0.001) noise in the {x, z} directions per gate 
   \begin{center}
     \includegraphics[width=8cm]{7qb-diagram}
@@ -769,7 +769,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Adding Error Correction at different Timesteps}
+\begin{frame}{7-Qubit Code: Adding Error Correction at Different Timesteps}
   - Using a noise model with (p=0.01) noise in the x and z-direction per gate 
   \begin{center}
    \includegraphics[width=9cm]{7qb-diagram}
@@ -777,7 +777,7 @@
   \end{center}
 \end{frame}
 
-\begin{frame}{7-qubit code: Generalizing to Error Correction}
+\begin{frame}{7-Qubit Code: Generalizing to Error Correction}
     \begin{itemize}
         \item Ultimately, error correction is useful, but must be intelligently deployed - here, error-correction is heavily sensitive to the noise in each gate
         \item It may be useful to characterize the thresholds before using error-correcting codes or consider using error-correcting codes continuously throughout a computation
