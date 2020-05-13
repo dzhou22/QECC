@@ -20,13 +20,9 @@
 \tikzstyle{block} = [rectangle, draw, text centered, minimum width = 2em, minimum height=4em]
 \tikzstyle{redblock} = [rectangle, draw, fill=red!20, text centered, minimum width = 2em, minimum height=4em]
 
-\caption{Scheme of GI off-specular scattering kinematics. 
-         Modified from~\protect\cite{Zabel2007handbook}}%%%<---
-\label{Off-Spec_Kinematics}
-
 %Information to be included in the title page:
 \title{Quantum Error Correction}
-\author[GGHLZ]{Louis Golowich \and Wenjie Gong \and Ari Hatzimemos Dylan Li \and Dylan Zhou}
+\author[GGHLZ]{Louis Golowich \and Wenjie Gong \and Ari Hatzimemos \\ Dylan Li \and Dylan Zhou}
 \institute[Harvard University]{Physics 160 \\ Harvard University}
 \date[Physics 160 Final Project]{Final Project Presentation, 13 May 2020}
 
@@ -294,11 +290,64 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{3-Qubit Codes on IBM's Machines}
-   
-    \textbf{Adjusting the circuit for IBM's machines} (which do not have feed-forward capability)
+    \frametitle{3-Qubit Codes on IBM's Machines: Adjusting the Circuit}
+    
+    \begin{itemize}
+        \item In order to test on IBM's real quantum machines, we had to adjust the circuit because IBM's machines do not have feed-forward capability.
+        \item Revised circuit for bit flip error correction:
+    \end{itemize}
+    % \textbf{Adjusting the circuit for IBM's machines} (which do not have feed-forward capability)\vspace{2mm}
+
+    
+
+    \vspace{5mm}
+    \hspace{25mm}
+    \Qcircuit @C=1em @R=1.5em {
+    \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw & \multigate{2}{E_{\text{bit}}} & \qw & \ctrl{1} & \ctrl{2} & \targ & \qw & \rstick{\ket{\psi}}\\ 
+    \lstick{\ket{0}} & \targ & \qw & \qw & \ghost{E_{\text{bit}}} & \qw & \targ & \qw & \ctrl{-1} & \qw\\
+    \lstick{\ket{0}} & \qw & \targ & \qw & \ghost{E_{\text{bit}}} & \qw & \qw & \targ & \ctrl{-2} & \qw
+    }\vspace{5mm}
     
 \end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes on IBM's Machines: Procedure}
+    Testing Procedure: 
+        \begin{itemize}
+            \item Initialize single qubit to $\ket{0}$, apply $X$ gate, measure resulting state. Repeat 8192 times and calculate accuracy by number of $\ket{1}$ states measured over 8192.
+            \item Encode the state $\ket{0}$ using the circuit from the last slide, apply $X$ gates on all three qubits, correct error, measure resulting state. Repeat 8192 times and calculate accuracy by number of $\ket{111}$ states measured over 8192.
+            \item Compare accuracies across machines. \textit{When is it beneficial to use this 3-qubit error correction code?}
+        \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes on IBM's Machines: Results and Discussion}
+    \begin{center}
+        \begin{tabular}{ |c|c|c| } 
+         \hline
+         \textbf{machine} & single qubit accuracy & encoded qubit accuracy \\\hline\hline
+         ibmq\_ourense & 0.969 & 0.867 \\ 
+         ibmq\_essex & 0.959 & 0.889 \\
+         ibmq\_rome & 0.953 & 0.814 \\
+         ibmq\_london & 0.941 & 0.856 \\
+         ibmq\_burlington & 0.956 & 0.749 \\ 
+         ibmq\_vigo & 0.970 & 0.804 \\
+         \hline
+        \end{tabular}
+    \end{center}
+
+    \begin{itemize}
+        \item Error-correcting code performs worse on every machine tested.
+        \item Why?
+        \begin{itemize}
+            \item Depolarizing noise vs. bit flip channel
+            \item Imperfect gates
+            \item Errors in encoding step 
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
 
 \section{The Shor 9-Qubit Code}
 \begin{frame}
@@ -484,53 +533,68 @@
 %   \end{center}
 % \end{frame}
 
-\begin{frame}{Example recovery for $X$ error in qubit 3}
+% \begin{frame}{Example recovery for $X$ error in qubit 3}
   
-  {\tiny
-    \begin{align*}
-      \ket{0_L} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
-      X^{(3)}\ket{0_L} &=
-                                  \frac{\ket{00\textcolor{red}{1}0000}\tikzmark{t1}
-                                  +\ket{10\textcolor{red}{0}0101}\tikzmark{t2}
-                                  +\ket{01\textcolor{red}{0}0011}\tikzmark{t3}
-                                  +\ket{11\textcolor{red}{1}0110}\tikzmark{t4}
-                                  +\ket{00\textcolor{red}{1}1111}\tikzmark{t5}
-                                  +\ket{10\textcolor{red}{0}1010}\tikzmark{t6}
-                                  +\ket{01\textcolor{red}{0}1100}\tikzmark{t7}
-                                  +\ket{11\textcolor{red}{1}1001}\tikzmark{t8}
-                                  }{\sqrt{8}}
-    \end{align*}
+%   {\tiny
+%     \begin{align*}
+%       \ket{0_L} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+%       X^{(3)}\ket{0_L} &=
+%                                   \frac{\ket{00\textcolor{red}{1}0000}\tikzmark{t1}
+%                                   +\ket{10\textcolor{red}{0}0101}\tikzmark{t2}
+%                                   +\ket{01\textcolor{red}{0}0011}\tikzmark{t3}
+%                                   +\ket{11\textcolor{red}{1}0110}\tikzmark{t4}
+%                                   +\ket{00\textcolor{red}{1}1111}\tikzmark{t5}
+%                                   +\ket{10\textcolor{red}{0}1010}\tikzmark{t6}
+%                                   +\ket{01\textcolor{red}{0}1100}\tikzmark{t7}
+%                                   +\ket{11\textcolor{red}{1}1001}\tikzmark{t8}
+%                                   }{\sqrt{8}}
+%     \end{align*}
 
-    \begin{equation*}
-      \begin{pmatrix}
-        1&0&1&0&1&0&1\\
-        0&1&1&0&0&1&1\\
-        0&0&0&1&1&1&1
-      \end{pmatrix}
-      \begin{pmatrix}\;\;\\ \\ \tikzmark{n1} \\ \\ \\ \\\end{pmatrix}
-      = \begin{pmatrix}1\\1\\0\end{pmatrix} = \ket{3} \text{ (in binary)}
-    \end{equation*}
-  }
-  \begin{tikzpicture}[remember picture,overlay]   %% use here too
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t1) -- ([xshift=-2mm,yshift=0mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t2) -- ([xshift=-2mm,yshift=1mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t3) -- ([xshift=-1mm,yshift=2mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t4) -- ([xshift=-1mm,yshift=3mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t5) -- ([xshift=1mm,yshift=3mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t6) -- ([xshift=1mm,yshift=2mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
-  \end{tikzpicture}
-  In fact:
-  \begin{align*}
-    \begin{pmatrix}
-      1&0&1&0&1&0&1\\
-      0&1&1&0&0&1&1\\
-      0&0&0&1&1&1&1
-    \end{pmatrix}
-                   X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
-  \end{align*}
-  Also works for logical state $1$, and for phase flips.
+%     \begin{equation*}
+%       \begin{pmatrix}
+%         1&0&1&0&1&0&1\\
+%         0&1&1&0&0&1&1\\
+%         0&0&0&1&1&1&1
+%       \end{pmatrix}
+%       \begin{pmatrix}\;\;\\ \\ \tikzmark{n1} \\ \\ \\ \\\end{pmatrix}
+%       = \begin{pmatrix}1\\1\\0\end{pmatrix} = \ket{3} \text{ (in binary)}
+%     \end{equation*}
+%   }
+%   \begin{tikzpicture}[remember picture,overlay]   %% use here too
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t1) -- ([xshift=-2mm,yshift=0mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t2) -- ([xshift=-2mm,yshift=1mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t3) -- ([xshift=-1mm,yshift=2mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t4) -- ([xshift=-1mm,yshift=3mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t5) -- ([xshift=1mm,yshift=3mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t6) -- ([xshift=1mm,yshift=2mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
+%   \end{tikzpicture}
+%   In fact:
+%   \begin{align*}
+%     \begin{pmatrix}
+%       1&0&1&0&1&0&1\\
+%       0&1&1&0&0&1&1\\
+%       0&0&0&1&1&1&1
+%     \end{pmatrix}
+%                    X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
+%   \end{align*}
+%   Also works for logical state $1$, and for phase flips.
+% \end{frame}
+
+\begin{frame}{Intuition: Stabilizers}
+  7-qubit code is stabilized by the operators:
+  \begin{equation*}
+    \begin{matrix}
+      IIIXXXX\\
+      IXXIIXX\\
+      XIXIXIX\\
+      IIIZZZZ\\
+      IZZIIZZ\\
+      ZIZIZIZ\\
+    \end{matrix}
+  \end{equation*}
+  Bit flip or phase flip takes $\ket{0_L},\ket{1_L}$ outside of subspace stabilized by above operators, which can then be detected with ancilla qubits.
 \end{frame}
 
 % \begin{frame}{Example recovery for $X$ error}
@@ -628,6 +692,10 @@
     \end{center}
 \end{frame}
 
+\begin{frame}{7-qubit code}
+  \includegraphics[width=\textwidth]{7qb_drake}
+\end{frame}
+
 \begin{frame}{7-qubit code: Fidelity of X Gate under \textcolor{red!20}{Depolarization}}
   \begin{tikzpicture}
     \node[block] (init) at (0, 0) {Encode $\ket{0_L}$};
@@ -659,14 +727,14 @@
   \item With no depolarization in correction gates, error correction improves fidelity for depolarization probability $\lessapprox .12$
   \item With depolarization in all gates, error correction never improves fidelity
     \pause
-  \item Doesn't that mean error correction is never helpful?
-    \pause
-  \item No: fidelity isn't all we care about
-  \item Example: $\bra{0_L}X^{(i)}\ket{0_L}=0$
-    \begin{itemize}
-    \item Single bit flip to $\ket{0_L}$ gives fidelity $0$, but can be corrected!
-    \end{itemize}
-    \pause
+  % \item Doesn't that mean error correction is never helpful?
+  %   \pause
+  % \item No: fidelity isn't all we care about
+  % \item Example: $\bra{0_L}X^{(i)}\ket{0_L}=0$
+  %   \begin{itemize}
+  %   \item Single bit flip to $\ket{0_L}$ gives fidelity $0$, but can be corrected!
+  %   \end{itemize}
+  %   \pause
   \item 7-qubit code reduces single gate error rate for depolarization rates lower than detectable by our qiskit simulations ($p\lessapprox 10^{-4}$)
   \end{itemize}
 \end{frame}
@@ -714,6 +782,39 @@
         \item Ultimately, error correction is useful, but must be intelligently deployed - here, error-correction is heavily sensitive to the noise in each gate
         \item It may be useful to characterize the thresholds before using error-correcting codes or consider using error-correcting codes continuously throughout a computation
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Closing Remarks}
+
+    \begin{displayquote}
+        \small
+        We cannot clone, perforce; instead we split\\
+        Coherence to protect it from that wrong\\
+        That would destroy our valued quantum bit\\
+        And make our computation take too long.\\
+        \vspace{2mm}
+
+        Correct a flip and phase - that will suffice.\\
+        If in our code another error's bred, \\
+        We simply measure it, then God plays dice,\\
+        Collapsing it to X or Y or zed.\\
+        \vspace{2mm}
+
+        We start with noisy seven, nine, or five\\
+        And end with perfect one. To better spot \\
+        Those flaws we must avoid, we first must strive\\
+        To find which ones commute and which do not.\\
+        \vspace{2mm}
+
+        With group and eigenstate, we've learned to fix\\
+        Your quantum errors with our quantum tricks.
+    \end{displayquote}
+    \hspace{20mm}- `Quantum Error Correction Sonnet', by Daniel Gottesman
+\end{frame}
+
+\begin{frame}{Acknowledgements}
+    Thank you to Professor Lukin, Emma, and Mihir for teaching us Quantum Computation and special thanks to Emma for her guidance and advice on this project! 
 \end{frame}
 
 \end{document}
