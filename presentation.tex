@@ -298,7 +298,7 @@
 
 \section{The Shor 9-Qubit Code}
 \begin{frame}
-    \frametitle{The Shor Code}
+    \frametitle{The Shor 9-Qubit Code}
     \begin{itemize}
         \item<1-> Can we protect against \textit{arbitrary} errors?
         \item<2-> Yes! $\longrightarrow$ The \textit{Shor code}
@@ -375,10 +375,11 @@
             
             \begin{align*}
             &10 \rightarrow \sigma_z \text{ on block 1}\\
-            &01 \rightarrow \sigma_z \text{ on block 2}\\
-            &11 \rightarrow \sigma_z \text{ on blocks 1 and 2}.\\
+            &01 \rightarrow \sigma_z \text{ on block 3}\\
+            &11 \rightarrow \sigma_z \text{ on block 2}.\\
            \end{align*}
-        
+           
+           \item As two bit-flip errors occur with probability $3p^2$ per block for 3 blocks, and two phase-flip errors occur on separate blocks with probability $3p^2$, the total error $\sim 12p^2$. Thus, this error code is efficient for $12p^2 < p \implies p < 0.083$.
             
         \end{itemize}
 \end{frame}
@@ -407,7 +408,23 @@
 
 \begin{frame}
     \frametitle{The Shor 9-Qubit Code: Simulation Performance with Error Correction}
-            \centering\includegraphics[scale = 0.7]{shor9_ec.pdf}
+    \begin{itemize}
+        \item Initial state: $\ket{0} \rightarrow \ket{0_L}$
+        \item Fidelity of un-encoded state measured against $\ket{000000000}$.
+        
+        \centering\includegraphics[scale = 0.6]{shor9_ec.pdf}
+    \end{itemize}
+            
+\end{frame}
+
+\begin{frame}
+    \frametitle{The Shor 9-Qubit Code: Simulation Performance with Error Correction}
+    \begin{itemize}
+        \item Initial state: $\ket{+} \rightarrow \frac{1}{\sqrt{2}}(\ket{0_L}+\ket{1_L})$
+        \item Fidelity of un-encoded state measured against $\ket{000000000}$.
+        
+        \centering\includegraphics[scale = 0.6]{shor9_pec.pdf}
+    \end{itemize}
 \end{frame}
 
 \section{The 7-Qubit Code}
@@ -500,46 +517,56 @@
     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
   \end{tikzpicture}
+  In fact:
+  \begin{align*}
+    \begin{pmatrix}
+      1&0&1&0&1&0&1\\
+      0&1&1&0&0&1&1\\
+      0&0&0&1&1&1&1
+    \end{pmatrix}
+                   X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
+  \end{align*}
+  Also works for logical state $1$, and for phase flips.
 \end{frame}
 
-\begin{frame}{Example recovery for $X$ error}
-  \begin{itemize}
-  \item In fact:
-    \begin{align*}
-      \begin{pmatrix}
-        1&0&1&0&1&0&1\\
-        0&1&1&0&0&1&1\\
-        0&0&0&1&1&1&1
-      \end{pmatrix}
-                     X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
-    \end{align*}
-  \item Let $H$ be matrix above. To recover from single $X$ error, apply map
-    \begin{equation*}
-      \ket{v}\otimes\ket{0}_A\mapsto\ket{v}\otimes\ket{Hv}_A
-    \end{equation*}
-    and measure subsystem $A$. Result will be index $i$ of bit flip, in binary!
-  \item Also works for logical state $1$, and for phase flips.
-  \end{itemize}
-\end{frame}
+% \begin{frame}{Example recovery for $X$ error}
+%   \begin{itemize}
+%   \item In fact:
+%     \begin{align*}
+%       \begin{pmatrix}
+%         1&0&1&0&1&0&1\\
+%         0&1&1&0&0&1&1\\
+%         0&0&0&1&1&1&1
+%       \end{pmatrix}
+%                      X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
+%     \end{align*}
+%   \item Let $H$ be matrix above. To recover from single $X$ error, apply map
+%     \begin{equation*}
+%       \ket{v}\otimes\ket{0}_A\mapsto\ket{v}\otimes\ket{Hv}_A
+%     \end{equation*}
+%     and measure subsystem $A$. Result will be index $i$ of bit flip, in binary!
+%   \item Also works for logical state $1$, and for phase flips.
+%   \end{itemize}
+% \end{frame}
 
-\begin{frame}{7-qubit code: Why does it work?}
-  \begin{itemize}
-  \item The kernel of the matrix
-    \begin{equation*}
-      H=\begin{pmatrix}
-        1&0&1&0&1&0&1\\
-        0&1&1&0&0&1&1\\
-        0&0&0&1&1&1&1
-      \end{pmatrix}\in\mathbb{F}_2^{3\times 7}
-    \end{equation*}
-    consists of the 16 bit strings defining $\ket{0_L},\ket{1_L}$
-  \item A bit flip at position $i$ of a vector $v$ adds the $i$th row of $H$ to $Hv$ (basic linear algebra)
-  \item The $i$th row of $H$ is $i$ in binary
-  \item Same reasoning for phase flips = bit flips in rotated basis
-  \end{itemize}
-\end{frame}
+% \begin{frame}{7-qubit code: Why does it work?}
+%   \begin{itemize}
+%   \item The kernel of the matrix
+%     \begin{equation*}
+%       H=\begin{pmatrix}
+%         1&0&1&0&1&0&1\\
+%         0&1&1&0&0&1&1\\
+%         0&0&0&1&1&1&1
+%       \end{pmatrix}\in\mathbb{F}_2^{3\times 7}
+%     \end{equation*}
+%     consists of the 16 bit strings defining $\ket{0_L},\ket{1_L}$
+%   \item A bit flip at position $i$ of a vector $v$ adds the $i$th row of $H$ to $Hv$ (basic linear algebra)
+%   \item The $i$th row of $H$ is $i$ in binary
+%   \item Same reasoning for phase flips = bit flips in rotated basis
+%   \end{itemize}
+% \end{frame}
 
-\begin{frame}{7-qubit code: Initialization}
+\begin{frame}{7-qubit code: Encoding}
   
   {\tiny
     \begin{align*}
@@ -550,20 +577,23 @@
   \begin{center}
     \begin{columns}
       \begin{column}{.1\textwidth}
-        \vspace{.15cm}
+        \vspace{-.18cm}
         \begin{tabular}{c}
-          $\ket{\psi}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
-          $\ket{0}\rightarrow$ \\
+          $\ket{\psi}$ \\
+          $\ket{0}$ \\
+          $\ket{0}$ \\
+          $\ket{0}$ \\
+          $\ket{0}$ \\
+          $\ket{0}$ \\
+          $\ket{0}$ \\
         \end{tabular}
       \end{column}
-      \hspace{-1cm}
+      \hspace{-.8cm}
       \begin{column}{.8\textwidth}
         \includegraphics[width=\textwidth]{7qb_init}
+      \end{column}
+      \begin{column}{.1\textwidth}
+        $\ket{\psi_L}$
       \end{column}
     \end{columns}
   \end{center}
@@ -577,7 +607,7 @@
   \includegraphics[width=\textwidth]{7qb_phase}
 \end{frame}
 
-\begin{frame}{7-qubit code: Measurement}
+\begin{frame}{7-qubit code: Decoding and measurement}
   \includegraphics[width=\textwidth]{7qb_end}
 \end{frame}
 
@@ -620,7 +650,7 @@
     \item Single bit flip to $\ket{0_L}$ gives fidelity $0$, but can be corrected!
     \end{itemize}
     \pause
-  \item Conclusion: TODO
+  \item 7-qubit code reduces single gate error rate for depolarization rates lower than detectable by our qiskit simulations ($p\lessapprox 10^{-4}$)
   \end{itemize}
 \end{frame}
   
