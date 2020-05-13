@@ -290,11 +290,64 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{3-Qubit Codes on IBM's Machines}
-   
-    \textbf{Adjusting the circuit for IBM's machines} (which do not have feed-forward capability)
+    \frametitle{3-Qubit Codes on IBM's Machines: Adjusting the Circuit}
+    
+    \begin{itemize}
+        \item In order to test on IBM's real quantum machines, we had to adjust the circuit because IBM's machines do not have feed-forward capability.
+        \item Revised circuit for bit flip error correction:
+    \end{itemize}
+    % \textbf{Adjusting the circuit for IBM's machines} (which do not have feed-forward capability)\vspace{2mm}
+
+    
+
+    \vspace{5mm}
+    \hspace{25mm}
+    \Qcircuit @C=1em @R=1.5em {
+    \lstick{\ket{\psi}} & \ctrl{1} & \ctrl{2} & \qw & \multigate{2}{E_{\text{bit}}} & \qw & \ctrl{1} & \ctrl{2} & \targ & \qw & \rstick{\ket{\psi}}\\ 
+    \lstick{\ket{0}} & \targ & \qw & \qw & \ghost{E_{\text{bit}}} & \qw & \targ & \qw & \ctrl{-1} & \qw\\
+    \lstick{\ket{0}} & \qw & \targ & \qw & \ghost{E_{\text{bit}}} & \qw & \qw & \targ & \ctrl{-2} & \qw
+    }\vspace{5mm}
     
 \end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes on IBM's Machines: Procedure}
+    Testing Procedure: 
+        \begin{itemize}
+            \item Initialize single qubit to $\ket{0}$, apply $X$ gate, measure resulting state. Repeat 8192 times and calculate accuracy by number of $\ket{1}$ states measured over 8192.
+            \item Encode the state $\ket{0}$ using the circuit from the last slide, apply $X$ gates on all three qubits, correct error, measure resulting state. Repeat 8192 times and calculate accuracy by number of $\ket{111}$ states measured over 8192.
+            \item Compare accuracies across machines. \textit{When is it beneficial to use this 3-qubit error correction code?}
+        \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{3-Qubit Codes on IBM's Machines: Results and Discussion}
+    \begin{center}
+        \begin{tabular}{ |c|c|c| } 
+         \hline
+         \textbf{machine} & single qubit accuracy & encoded qubit accuracy \\\hline\hline
+         ibmq\_ourense & 0.969 & 0.867 \\ 
+         ibmq\_essex & 0.959 & 0.889 \\
+         ibmq\_rome & 0.953 & 0.814 \\
+         ibmq\_london & 0.941 & 0.856 \\
+         ibmq\_burlington & 0.956 & 0.749 \\ 
+         ibmq\_vigo & 0.970 & 0.804 \\
+         \hline
+        \end{tabular}
+    \end{center}
+
+    \begin{itemize}
+        \item Error-correcting code performs worse on every machine tested.
+        \item Why?
+        \begin{itemize}
+            \item Depolarizing noise vs. bit flip channel
+            \item Imperfect gates
+            \item Errors in encoding step 
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
 
 \section{The Shor 9-Qubit Code}
 \begin{frame}
@@ -664,7 +717,7 @@
 \begin{frame}{7-qubit code: Extending to Multiple Gates}
     \begin{itemize}
         \item <1-> Here, we assumed that the $\ket{0}_L$ state was perfectly encoded, before performing up to 200 pairs of X gates on the seven qubits simultaneously
-        \item <2-> In the end, we decoded and we measured the value of the first of the seven qubits to measure its fidelity with the predicted state -> we should end up with $\ket{0}^{\otimes 7}$
+        \item <2-> In the end, we decoded and we measured the value of the first of the seven qubits to measure its fidelity with the predicted state $\implies$ we should end up with $\ket{0}^{\otimes 7}$
         \item <3-> We compared the fidelity of the error correcting algorithm to a single qubit that goes through up to 200 X rotations
     \end{itemize}
 \end{frame}

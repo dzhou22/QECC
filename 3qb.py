@@ -539,9 +539,9 @@ def plot_results(results, title):
 
 
 # # Testing BitFlip2 Code
-# qc = BitFlip2()
-# # qc.x_gate()
-# qc.correct_error()
+qc = BitFlip2()
+# qc.x_gate()
+qc.correct_error()
 # qc.draw()
 
 # qc.run_simulation(100,1,'1')
@@ -554,32 +554,46 @@ def plot_results(results, title):
 
 # # # Testing on real machine:
 # print("running on ourense...")
+# print("accuracy:", qc.run_real_device('ibmq_ourense', 8192, '0'))
+# ====RESULT of initialization:==== accuracy: 0.9305419921875
 # print("accuracy:", qc.run_real_device('ibmq_ourense', 8192, '1'))
 # # ====RESULT:==== accuracy: 0.8673095703125
 # print("running on essex...")
-# print("accuracy:", qc.run_real_device('ibmq_essex', 8192, '1'))
+# print("accuracy:", qc.run_real_device('ibmq_essex', 8192, '0'))
+# ====RESULT of initialization:====
 # ====RESULT:==== accuracy: 0.8885498046875
 # print("running on rome...")
 # print("accuracy:", qc.run_real_device('ibmq_rome', 8192, '1'))
+# ====RESULT of initialization:==== accuracy: 0.9193115234375
 # ====RESULT:==== accuracy: 0.8143310546875
+# accuracy: 0.7313232421875 ???
+# accuracy: 0.8616943359375 ???
+# accuracy: 0.7362060546875 ???
+# accuracy: 0.729736328125
 # print("accuracy:", qc.run_real_device('ibmq_athens', 8192, '1')) # not found
 # ====RESULT:==== 
 # print("running on london...")
-# print("accuracy:", qc.run_real_device('ibmq_london', 8192, '1')) #error
+# print("accuracy:", qc.run_real_device('ibmq_london', 8192, '0')) #error
+# ====RESULT of initialization:==== accuracy: 0.900146484375
 # ====RESULT:==== accuracy: 0.8560791015625
+# accuracy: 0.643798828125???
+# accuracy: 0.7236328125???
+# accuracy: 0.8243408203125
 # print("running on burlington...")
 # print("accuracy:", qc.run_real_device('ibmq_burlington', 8192, '0')) # error
-# ====RESULT:==== 
+# ====RESULT of initialization:==== accuracy: 0.767822265625
+# ====RESULT:==== accuracy: 0.7490234375
 # print("running on vigo...")
-# print("accuracy:", qc.run_real_device('ibmq_vigo', 8192, '1'))
+# print("accuracy:", qc.run_real_device('ibmq_vigo', 8192, '0'))
+# ====RESULT of initialization:==== accuracy: 0.8607177734375
 # ====RESULT:==== accuracy: 0.80419921875
 
 # # Let's compare to a single qubit with no error correction:
-qr = QuantumRegister(1)
-cr = ClassicalRegister(1)
-single_qb = QuantumCircuit(qr, cr)
-# single_qb.x(qr[0])
-single_qb.measure(0, 0)
+# qr = QuantumRegister(1)
+# cr = ClassicalRegister(1)
+# single_qb = QuantumCircuit(qr, cr)
+# # single_qb.x(qr[0])
+# single_qb.measure(0, 0)
 
 # simulation:
 # success_rate = []
@@ -603,21 +617,29 @@ single_qb.measure(0, 0)
 # device = provider.get_backend('ibmq_rome')
 # device = provider.get_backend('ibmq_athens')
 # device = provider.get_backend('ibmq_london')
-device = provider.get_backend('ibmq_burlington')
+# device = provider.get_backend('ibmq_burlington')
+# device = provider.get_backend('ibmq_vigo')
 
-device = provider.get_backend('ibmq_vigo')
-print("running...")
-job = execute(single_qb, device, shots=8192)
-hist = job.result().get_counts()
-print("accuracy:", hist.get('1')/8192)
+# print("running...")
+# job = execute(single_qb, device, shots=8192)
+# hist = job.result().get_counts()
+# print("accuracy:", hist.get('0')/8192)
 
-# ====RESULT (ourense):==== accuracy: 0.96875
-# ====RESULT (essex):==== accuracy: 0.958740234375
-# ====RESULT (rome):==== accuracy: 0.952880859375
-# ====RESULT (athens):==== error
-# ====RESULT (london):==== accuracy: 0.941162109375
-# ====RESULT (burlington):==== accuracy: 0.9561767578125
-# ====RESULT (vigo):==== accuracy: 0.9698486328125
+# ====RESULT initialization (ourense):==== accuracy: 0.9903564453125
+# ====RESULT initialization (essex):==== 
+# ====RESULT initialization (rome):==== accuracy: 0.9937744140625
+# ====RESULT initialization (athens):==== error
+# ====RESULT initialization (london):==== accuracy: 0.997314453125
+# ====RESULT initialization (burlington):==== accuracy: 0.980712890625
+# ====RESULT initialization (vigo):==== accuracy: 0.9862060546875
+
+# ====RESULT for x gate (ourense):==== accuracy: 0.96875
+# ====RESULT for x gate (essex):==== accuracy: 0.958740234375
+# ====RESULT for x gate (rome):==== accuracy: 0.952880859375
+# ====RESULT for x gate (athens):==== error
+# ====RESULT for x gate (london):==== accuracy: 0.941162109375
+# ====RESULT for x gate (burlington):==== accuracy: 0.9561767578125
+# ====RESULT for x gate (vigo):==== accuracy: 0.9698486328125
 
 
 
