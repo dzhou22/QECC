@@ -177,27 +177,29 @@
     % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
     \begin{itemize}
         \item Complete circuit for error correction (or \textit{recovery}):
-        
-            \vspace{5mm}
-            \includegraphics[scale=0.35]{3qb-circuit.png}
     \end{itemize}
+    \vspace{5mm}
+    \centering
+    \includegraphics[scale=0.18]{3qb-circuit-labeled.png}
 \end{frame}
 
 \begin{frame}
     \frametitle{Analyzing the Bit Flip Code: Simulation}
     % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
     \begin{itemize}
-        \item<1-> Let's look at the performance of the 3-qubit bit flip code against bit flip channels of varying error probabilities $p$.
-        \item<2-> Setup: 
+        \item Let's look at the performance of the 3-qubit bit flip code against bit flip channels of varying error probabilities $p$.
+        \item Setup: 
         \begin{enumerate}
             \item encode a single qubit in state $\ket{0}$ into a logical state $\ket{0_L} = \ket{000}$
             \item create a bit flip channel which adds $X$ gates with probability $p$
             \item run error correcting code
             \item measure final state 
         \end{enumerate}
-        \item<3-> We can calculate the accuracy of the error correcting code for a given $p$ by repeating many times and taking the number of times we measure a correct final state $\ket{000}$ and dividing by the total number of trials.
-        \item<4-> We can compare this to the accuracy of a single qubit (without encoding or error correction) that goes through a bit flip channel with the same $p$ to see when error correction is effective.
+        % \item<3-> We can calculate the accuracy of the error correcting code for a given $p$ by repeating many times and taking the number of times we measure a correct final state $\ket{000}$ and dividing by the total number of trials.
+        % \item<4-> We can compare this to the accuracy of a single qubit (without encoding or error correction) that goes through a bit flip channel with the same $p$ to see when error correction is effective.
     \end{itemize}
+    \centering \pause
+    \includegraphics[scale=0.12]{3qb-circuit-2-color.png} 
 \end{frame}
 
 \begin{frame}
@@ -209,7 +211,7 @@
     \end{itemize}
     \begin{minipage}{0.45\textwidth}
         \begin{figure}[H]
-        \includegraphics[scale=0.4]{3qb-bf-overlay copy.png}
+        \includegraphics[scale=0.16]{3qb-bf-overlay copy.png}
         % \caption{\label{fig:blue_rectangle} Rectangle}
         \end{figure}
         \end{minipage} \hfill
@@ -258,10 +260,9 @@
 \begin{frame}
     \frametitle{3-Qubit Phase Flip Code}
     % \textbf{3-Qubit Bit Flip Code: Correcting Errors}
-    \begin{itemize}
-        \item TODO
-
-    \end{itemize}
+    Complete 3-qubit phase flip code:
+    \centering
+    \includegraphics[scale=0.15]{3qb-pf-circuit-color.png}
 \end{frame}
 
 \begin{frame}
@@ -275,7 +276,7 @@
     \end{itemize}
     \begin{minipage}{0.45\textwidth}
         \begin{figure}[H]
-        \includegraphics[scale=0.4]{3qb-pf-overlay.png}
+        \includegraphics[scale=0.16]{3qb-pf-overlay.png}
         % \caption{\label{fig:blue_rectangle} Rectangle}
         \end{figure}
         \end{minipage} \hfill
