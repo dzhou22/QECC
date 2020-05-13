@@ -480,53 +480,68 @@
 %   \end{center}
 % \end{frame}
 
-\begin{frame}{Example recovery for $X$ error in qubit 3}
+% \begin{frame}{Example recovery for $X$ error in qubit 3}
   
-  {\tiny
-    \begin{align*}
-      \ket{0_L} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
-      X^{(3)}\ket{0_L} &=
-                                  \frac{\ket{00\textcolor{red}{1}0000}\tikzmark{t1}
-                                  +\ket{10\textcolor{red}{0}0101}\tikzmark{t2}
-                                  +\ket{01\textcolor{red}{0}0011}\tikzmark{t3}
-                                  +\ket{11\textcolor{red}{1}0110}\tikzmark{t4}
-                                  +\ket{00\textcolor{red}{1}1111}\tikzmark{t5}
-                                  +\ket{10\textcolor{red}{0}1010}\tikzmark{t6}
-                                  +\ket{01\textcolor{red}{0}1100}\tikzmark{t7}
-                                  +\ket{11\textcolor{red}{1}1001}\tikzmark{t8}
-                                  }{\sqrt{8}}
-    \end{align*}
+%   {\tiny
+%     \begin{align*}
+%       \ket{0_L} &= \frac{\ket{0000000}+\ket{1010101}+\ket{0110011}+\ket{1100110}+\ket{0001111}+\ket{1011010}+\ket{0111100}+\ket{1101001}}{\sqrt{8}} \\
+%       X^{(3)}\ket{0_L} &=
+%                                   \frac{\ket{00\textcolor{red}{1}0000}\tikzmark{t1}
+%                                   +\ket{10\textcolor{red}{0}0101}\tikzmark{t2}
+%                                   +\ket{01\textcolor{red}{0}0011}\tikzmark{t3}
+%                                   +\ket{11\textcolor{red}{1}0110}\tikzmark{t4}
+%                                   +\ket{00\textcolor{red}{1}1111}\tikzmark{t5}
+%                                   +\ket{10\textcolor{red}{0}1010}\tikzmark{t6}
+%                                   +\ket{01\textcolor{red}{0}1100}\tikzmark{t7}
+%                                   +\ket{11\textcolor{red}{1}1001}\tikzmark{t8}
+%                                   }{\sqrt{8}}
+%     \end{align*}
 
-    \begin{equation*}
-      \begin{pmatrix}
-        1&0&1&0&1&0&1\\
-        0&1&1&0&0&1&1\\
-        0&0&0&1&1&1&1
-      \end{pmatrix}
-      \begin{pmatrix}\;\;\\ \\ \tikzmark{n1} \\ \\ \\ \\\end{pmatrix}
-      = \begin{pmatrix}1\\1\\0\end{pmatrix} = \ket{3} \text{ (in binary)}
-    \end{equation*}
-  }
-  \begin{tikzpicture}[remember picture,overlay]   %% use here too
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t1) -- ([xshift=-2mm,yshift=0mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t2) -- ([xshift=-2mm,yshift=1mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t3) -- ([xshift=-1mm,yshift=2mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t4) -- ([xshift=-1mm,yshift=3mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t5) -- ([xshift=1mm,yshift=3mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t6) -- ([xshift=1mm,yshift=2mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
-    \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
-  \end{tikzpicture}
-  In fact:
-  \begin{align*}
-    \begin{pmatrix}
-      1&0&1&0&1&0&1\\
-      0&1&1&0&0&1&1\\
-      0&0&0&1&1&1&1
-    \end{pmatrix}
-                   X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
-  \end{align*}
-  Also works for logical state $1$, and for phase flips.
+%     \begin{equation*}
+%       \begin{pmatrix}
+%         1&0&1&0&1&0&1\\
+%         0&1&1&0&0&1&1\\
+%         0&0&0&1&1&1&1
+%       \end{pmatrix}
+%       \begin{pmatrix}\;\;\\ \\ \tikzmark{n1} \\ \\ \\ \\\end{pmatrix}
+%       = \begin{pmatrix}1\\1\\0\end{pmatrix} = \ket{3} \text{ (in binary)}
+%     \end{equation*}
+%   }
+%   \begin{tikzpicture}[remember picture,overlay]   %% use here too
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t1) -- ([xshift=-2mm,yshift=0mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t2) -- ([xshift=-2mm,yshift=1mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t3) -- ([xshift=-1mm,yshift=2mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t4) -- ([xshift=-1mm,yshift=3mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t5) -- ([xshift=1mm,yshift=3mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t6) -- ([xshift=1mm,yshift=2mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t7) -- ([xshift=2mm,yshift=1mm]n1);
+%     \path[draw=blue,thick,->]<3-> ([xshift=-5mm,yshift=-1mm]t8) -- ([xshift=2mm,yshift=0mm]n1);
+%   \end{tikzpicture}
+%   In fact:
+%   \begin{align*}
+%     \begin{pmatrix}
+%       1&0&1&0&1&0&1\\
+%       0&1&1&0&0&1&1\\
+%       0&0&0&1&1&1&1
+%     \end{pmatrix}
+%                    X^{(i)}\ket{0_L} &= \ket{i} \text{ (in binary) for all } i=1,\dots,7
+%   \end{align*}
+%   Also works for logical state $1$, and for phase flips.
+% \end{frame}
+
+\begin{frame}{Intuition: Stabilizers}
+  7-qubit code is stabilized by the operators:
+  \begin{equation*}
+    \begin{matrix}
+      IIIXXXX\\
+      IXXIIXX\\
+      XIXIXIX\\
+      IIIZZZZ\\
+      IZZIIZZ\\
+      ZIZIZIZ\\
+    \end{matrix}
+  \end{equation*}
+  Bit flip or phase flip takes $\ket{0_L},\ket{1_L}$ outside of subspace stabilized by above operators, which can then be detected with ancilla qubits.
 \end{frame}
 
 % \begin{frame}{Example recovery for $X$ error}
