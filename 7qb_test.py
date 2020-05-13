@@ -247,7 +247,50 @@ def get_fidelities(noise_model):
     # print('Encoded x gate, with correction: fidelity=' + str(corr_fidelity))
 
     return (base_fidelity, corr_fidelity)
+
+def get_fidelities_repeated(noise_model, nreps=1):
+    '''Compute fidelity of a single qubit x gate with and without error
+    correction in the presence of depolarizing noie. The x gate is
+    implemented with u3 to isolate it in the noise model.
+    '''
+    # Base implementation, on single qubit with no encoding
+    base_circ = QuantumCircuit(1, 1)
+    for i in range(nreps):
+        base_circ.u3(np.pi, 0, 0, 0)
+    base_circ.measure(0, 0)
+    counts = execute(base_circ, Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    base_fidelity = counts.get('1', 0) / shots
     
+    # Implementation using 7-qubit code
+    xgate_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    xgate_circ.u3(np.pi, 0, 0, cq)
+
+    # Without correction
+    # counts = execute(init0_circ + xgate_circ + deinit1_circ +
+    #                  measure_circ, Aer.get_backend('qasm_simulator'),
+    #                  noise_model=noise_model, shots=shots).result().get_counts()
+    # nocorr_fidelity = counts.get('0000000', 0) / shots
+
+    # With correction
+    reset_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    reset_circ.reset(aqf)
+    reset_circ.reset(aqp)
+    to_rep_circ = xgate_circ + flip_circ + phase_circ + reset_circ
+    rep_circ = QuantumCircuit(cq, aqf, aqp, cc)
+    for i in range(nreps):
+        rep_circ = rep_circ + to_rep_circ
+    counts = execute(init0_circ + rep_circ + deinit1_circ +
+                     measure_circ, Aer.get_backend('qasm_simulator'),
+                     noise_model=noise_model, shots=shots).result().get_counts()
+    corr_fidelity = counts.get('0000000', 0) / shots
+
+    # print('Single qubit x gate: fidelity=' + str(base_fidelity)) 
+    # print('Encoded x gate, no correction: fidelity=' + str(nocorr_fidelity)) 
+    # print('Encoded x gate, with correction: fidelity=' + str(corr_fidelity))
+
+    return (base_fidelity, corr_fidelity)
+
 def predict_fidelities(p):
     '''Rough prediction of fidelities without and with error correction
     based on depolarizing parameter `p` for a single qubit gate. These
@@ -292,44 +335,48 @@ def plot_fidelities_noisefree_corr():
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.plot(pvals, empbase, marker='^', label='No error correction, empirical')
-    ax.plot(pvals, empcorr, marker='v', label='With error correction, empirical')
+    ax.plot(pvals, empbase, marker='^', label='No error correction, empirical - 1 physical qubit')
+    ax.plot(pvals, empcorr, marker='v', label='With error correction, empirical - 1 logical qubit')
     ax.plot(pvals, anabase, ls='--', label='No error correction, analytical')
     ax.plot(pvals, anacorr, ls=':', label='With error correction, analytical (lower bound)')
 
-    ax.set_xlabel('Depolarization probability')
+    ax.set_xlabel('Depolarization probability per gate')
     ax.set_ylabel('Fidelity of X gate')
 
     plt.legend(loc=3)
     plt.savefig('noisefree_corr.png')
 
-def plot_fidelities_noisy_corr():
+def plot_fidelities_noisy_corr(nreps=1):
     '''Plot fidelities where all gates have the same depolarization
     parameter. Note that a more realistic model would make multi-qubit
     gates more noisy.
     '''
+    assert nreps % 2 == 1
     empbase = []
     empcorr = []
     pvals = [i / 10000 for i in range(0, 16)]
     for p in pvals:
         fid_noise_model = get_noise(p, p, p, p)
-        empfids = get_fidelities(fid_noise_model)
+        empfids = get_fidelities_repeated(fid_noise_model, nreps)
         empbase.append(empfids[0])
         empcorr.append(empfids[1])
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.plot(pvals, empbase, marker='^', label='No error correction')
-    ax.plot(pvals, empcorr, marker='v', label='With error correction')
+    ax.plot(pvals, empbase, marker='^', label='No error correction - 1 physical qubit')
+    ax.plot(pvals, empcorr, marker='v', label='With error correction - 1 logical qubit')
 
-    ax.set_xlabel('Depolarization probability')
+    ax.set_xlabel('Depolarization probability per gate')
     ax.set_ylabel('Fidelity of X gate')
 
     plt.legend(loc=3)
-    plt.savefig('noisy_corr.png')
+    if nreps == 1:
+        plt.savefig('noisy_corr.png')
+    else:
+        plt.savefig('noisy_corr_rep_' + str(nreps) + '.png')
 
-shots = 2048
+shots = 4096
 cq = QuantumRegister(7, 'code')
 aqf = QuantumRegister(3, 'ancillaflip')
 aqp = QuantumRegister(3, 'ancillaphase')
@@ -360,7 +407,8 @@ correct_phases(phase_circ, cq, aqp)
 # phase_circ.draw(output='mpl').show()
 
 # test_circs()
-save_circs()
+# save_circs()
 
 plot_fidelities_noisefree_corr()
 plot_fidelities_noisy_corr()
+# plot_fidelities_noisy_corr(51)
